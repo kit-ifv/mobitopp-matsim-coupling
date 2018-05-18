@@ -26,7 +26,7 @@ fractionOfPopulation: 0.01
 #numberOfZones: 1174
 resultFolder: results/simulation
 seed: 1234
-visumFile: data/stuttgart_2009_everkehrsraum_nutzung.net.bz2
+visumFile: data/Stuttgart_2020_Ladepunkte_Carsharing_Gebiete.net.bz2
 #experimental:
 #  parameter1: 1
 #  parameter2: 2
