@@ -1,0 +1,22 @@
+activityScheduleCreator: standard
+carOwnership:
+  engine: data/parameters/SociodemographicCoefficients.txt
+  ownership: data/parameters/CarOwnershipModelParameter.txt
+  segment: data/parameters/LogitBasedCarSegmentModelParameter.txt
+#carSharing: 
+commuterTicket: data/parameters/TransitPassParameter.txt
+dataSource: !file
+  demandDataFolder: output/demand-data
+  matrixConfigurationFile: data/matrices/matrix-configuration.yaml
+  attractivityDataFile: data/Strukturdaten_Stuttgart_2009_Attractivities.csv
+  #charging: unlimited
+  defaultChargingPower: data/parameters/ChargingPower.txt
+demographyData: data/Strukturdaten_Stuttgart_2009_Demography.csv
+#numberOfZones: 1174
+panelData: data/data_stuttgart_2018_01_23.csv
+resultFolder: results/population-synthesis
+seed: 77859
+visumFile: data/stuttgart_2009_everkehrsraum_nutzung.net.bz2
+#experimental:
+#  parameter1: 1
+#  parameter2: 2

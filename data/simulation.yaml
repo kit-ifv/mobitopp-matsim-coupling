@@ -1,0 +1,32 @@
+dataSource: !file
+  demandDataFolder: output/demand-data
+  matrixConfigurationFile: data/matrices/matrix-configuration.yaml
+  attractivityDataFile: data/Strukturdaten_Stuttgart_2009_Attractivities.csv
+  #charging: unlimited
+  defaultChargingPower: data/parameters/ChargingPower.txt
+days: 1
+destinationChoice:
+  repetition: data/parameters/TargetParameterRepetition.csv
+  work: data/parameters/DestinationAndModeChoiceParameter-work.txt
+  business: data/parameters/DestinationAndModeChoiceParameter-business.txt
+  education: data/parameters/DestinationAndModeChoiceParameter-education.txt
+  service: data/parameters/DestinationAndModeChoiceParameter-service.txt
+  home: data/parameters/DestinationAndModeChoiceParameter-home.txt
+  undefined: data/parameters/DestinationAndModeChoiceParameter-undefined.txt
+  otherhome: data/parameters/DestinationAndModeChoiceParameter-otherhome.txt
+  privateBusiness: data/parameters/DestinationAndModeChoiceParameter-privateBusiness.txt
+  privateVisit: data/parameters/DestinationAndModeChoiceParameter-privateVisit.txt
+  shoppingDaily: data/parameters/DestinationAndModeChoiceParameter-shoppingDaily.txt
+  shoppingOther: data/parameters/DestinationAndModeChoiceParameter-shoppingOther.txt
+  leisureIndoor: data/parameters/DestinationAndModeChoiceParameter-leisureIndoor.txt
+  leisureOutdoor: data/parameters/DestinationAndModeChoiceParameter-leisureOutdoor.txt
+  leisureOther: data/parameters/DestinationAndModeChoiceParameter-leisureOther.txt
+  leisureWalk: data/parameters/DestinationAndModeChoiceParameter-leisureWalk.txt
+fractionOfPopulation: 0.01
+#numberOfZones: 1174
+resultFolder: results/simulation
+seed: 1234
+visumFile: data/stuttgart_2009_everkehrsraum_nutzung.net.bz2
+#experimental:
+#  parameter1: 1
+#  parameter2: 2

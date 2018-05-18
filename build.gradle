@@ -1,0 +1,53 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+
+group = 'edu.kit.ifv.mobitopp'
+version = 0.1
+wrapper.gradleVersion = '4.7'
+
+repositories {
+    jcenter()
+    mavenCentral()
+    maven { url "http://mvn.collide.info/content/repositories/releases/" }
+    maven { url "http://download.osgeo.org/webdav/geotools" }
+    maven { url project.ext["mobitopp.repository.url"] }
+}
+
+configurations.all {
+    exclude group: 'xerces', module: 'xerces'
+    exclude group: 'kml', module: 'kml'
+    exclude group: 'javax.media', module: 'jai_core'
+}
+
+dependencies {
+    compile 'edu.kit.ifv.mobitopp:mobitopp:0.1',
+        'org.jvnet.ogc:kml-v_2_2_0:2.2.0',
+        'org.matsim:matsim:0.7.0'
+        
+    testCompile 'junit:junit:4.12',
+        'org.hamcrest:hamcrest-all:1.3',
+        'org.mockito:mockito-core:2.+'
+}
+
+eclipse.classpath {
+    downloadSources=true
+}
+
+task runPopulationSynthesis(type: JavaExec) {
+    args = ['data/population-synthesis.yaml']
+    main = "edu.kit.ifv.mobitopp.populationsynthesis.PopulationSynthesisMatsim"
+}
+
+task runSimulation(type: JavaExec) {
+    args = ['data/simulation.yaml']
+    main = "edu.kit.ifv.mobitopp.simulation.SimulationMatsim"
+}
+
+tasks.withType(JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    dependsOn check
+    enableAssertions = "true"
+    group = "application"
+    maxHeapSize = "25G"
+    jvmArgs '-Xss512M'
+ }
