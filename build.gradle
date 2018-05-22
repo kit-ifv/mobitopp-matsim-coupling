@@ -10,7 +10,6 @@ repositories {
     mavenCentral()
     maven { url "http://mvn.collide.info/content/repositories/releases/" }
     maven { url "http://download.osgeo.org/webdav/geotools" }
-    maven { url project.ext["mobitopp.repository.url"] }
 }
 
 configurations.all {
@@ -20,7 +19,7 @@ configurations.all {
 }
 
 dependencies {
-    compile 'edu.kit.ifv.mobitopp:mobitopp:0.1',
+    compile 'edu.kit.ifv.mobitopp:mobitopp:0.1.0',
         'org.jvnet.ogc:kml-v_2_2_0:2.2.0',
         'org.matsim:matsim:0.7.0'
         
