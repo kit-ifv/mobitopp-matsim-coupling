@@ -1,0 +1,86 @@
+<?xml version="1.0" ?>
+<!DOCTYPE config SYSTEM "http://www.matsim.org/files/dtd/config_v2.dtd">
+<config>
+
+	<module name="controler">
+		<param name="outputDirectory" value="results/matsim" />
+		<param name="firstIteration" value="0" />
+		<param name="lastIteration" value="10" />
+		<param name="eventsFileFormat" value="xml" />
+		<param name="writeEventsInterval" value="10" />
+<!--
+		<param name="snapshotFormat" value="otfvis,googleearth" />
+-->
+		<param name="snapshotFormat" value="otfvis" />
+		<param name="writeSnapshotsInterval" value="0" />
+
+		<param name="mobsim" value="qsim" />
+	</module>
+
+	<module name="planCalcScore" >
+		<parameterset type="activityParams" >
+			<param name="activityType" value="HOME" />
+			<param name="typicalDuration" value="12:00:00" />
+		</parameterset>
+		<parameterset type="activityParams" >
+			<param name="activityType" value="WORK" />
+			<param name="typicalDuration" value="08:00:00" />
+		</parameterset>
+		<parameterset type="activityParams" >
+			<param name="activityType" value="BUSINESS" />
+			<param name="typicalDuration" value="04:00:00" />
+		</parameterset>
+		<parameterset type="activityParams" >
+			<param name="activityType" value="EDUCATION" />
+			<param name="typicalDuration" value="06:00:00" />
+		</parameterset>
+		<parameterset type="activityParams" >
+			<param name="activityType" value="SHOPPING" />
+			<param name="typicalDuration" value="01:00:00" />
+		</parameterset>
+		<parameterset type="activityParams" >
+			<param name="activityType" value="LEISURE" />
+			<param name="typicalDuration" value="02:00:00" />
+		</parameterset>
+		<parameterset type="activityParams" >
+			<param name="activityType" value="SERVICE" />
+			<param name="typicalDuration" value="00:30:00" />
+		</parameterset>
+		<parameterset type="activityParams" >
+			<param name="activityType" value="PRIVATE_BUSINESS" />
+			<param name="typicalDuration" value="01:00:00" />
+		</parameterset>
+		<parameterset type="activityParams" >
+			<param name="activityType" value="UNKNOWN" />
+			<param name="typicalDuration" value="01:00:00" />
+		</parameterset>
+		<parameterset type="activityParams" >
+			<param name="activityType" value="INFLOW" />
+			<param name="typicalDuration" value="4:00:00" />
+		</parameterset>
+		<parameterset type="activityParams" >
+			<param name="activityType" value="OUTFLOW" />
+			<param name="typicalDuration" value="4:00:00" />
+		</parameterset>
+	</module>
+
+	<module name="strategy">
+		<param name="maxAgentPlanMemorySize" value="5" /> <!-- 0 means unlimited -->
+
+		<param name="ModuleProbability_1" value="0.9" />
+		<param name="Module_1" value="ChangeExpBeta" />
+
+		<param name="ModuleProbability_2" value="0.1" />
+		<param name="Module_2" value="ReRoute" />
+<!--
+		<param name="ModuleProbability_3" value="0.1" />
+		<param name="Module_3" value="TimeAllocationMutator" />
+-->
+	</module>
+
+	<module name="qsim">
+		<param name="snapshotperiod" value="00:01:00" />
+	</module>
+
+
+</config>

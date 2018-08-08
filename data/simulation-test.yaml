@@ -14,4 +14,4 @@ resultFolder: results/simulation
 seed: 1234
 visumFile: data/stuttgart_2009_everkehrsraum_nutzung.net.bz2
 experimental:
-  matsimConfig: data/matsim-config.xml
+  matsimConfig: data/matsim-config-test.xml

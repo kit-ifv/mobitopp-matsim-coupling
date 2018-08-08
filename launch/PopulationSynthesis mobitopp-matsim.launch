@@ -2,7 +2,7 @@
 <launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
 <stringAttribute key="bad_container_name" value="\mobitopp-matsim-coupling\launch"/>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
-<listEntry value="/mobitopp/src/main/java/edu/kit/ifv/mobitopp/populationsynthesis/PopulationSynthesisConfiguration.java"/>
+<listEntry value="/mobitopp-matsim-coupling/src/main/java/edu/kit/ifv/mobitopp/populationsynthesis/PopulationSynthesisMatsim.java"/>
 </listAttribute>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
 <listEntry value="1"/>
@@ -12,8 +12,8 @@
 <listEntry value="org.eclipse.debug.ui.launchGroup.run"/>
 </listAttribute>
 <stringAttribute key="org.eclipse.jdt.launching.CLASSPATH_PROVIDER" value="org.eclipse.buildship.core.classpathprovider"/>
-<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="edu.kit.ifv.mobitopp.populationsynthesis.PopulationSynthesisConfiguration"/>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="edu.kit.ifv.mobitopp.populationsynthesis.PopulationSynthesisMatsim"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="data/population-synthesis.yaml"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="mobitopp-matsim-coupling"/>
-<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx29G -Xss512M -ea"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx26G -Xss512M -ea"/>
 </launchConfiguration>

@@ -51,7 +51,7 @@ public class PopulationSynthesisMatsim extends PopulationSynthesis {
 	}
 
 	public static PopulationSynthesisMatsim startSynthesis(File configurationFile) throws Exception {
-		SynthesisContext context = new ContextBuilder().buildFrom(configurationFile);
+		SynthesisContext context = new ValidatedRoadContextBuilder().buildFrom(configurationFile);
 		PopulationSynthesisMatsim synthesizer = populationSynthesis(context);
 		createLocations(context, synthesizer);
 		synthesizer.createPopulation();
