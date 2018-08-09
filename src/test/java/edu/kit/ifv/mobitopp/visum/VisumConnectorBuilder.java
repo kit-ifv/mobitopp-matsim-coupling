@@ -1,7 +1,7 @@
 package edu.kit.ifv.mobitopp.visum;
 
-import static edu.kit.ifv.mobitopp.simulation.publictransport.model.VisumBuilder.visumNode;
-import static edu.kit.ifv.mobitopp.simulation.publictransport.model.VisumBuilder.visumZone;
+import static edu.kit.ifv.mobitopp.visum.VisumBuilder.visumNode;
+import static edu.kit.ifv.mobitopp.visum.VisumBuilder.visumZone;
 import static java.util.Collections.singletonMap;
 
 import edu.kit.ifv.mobitopp.visum.VisumConnector;

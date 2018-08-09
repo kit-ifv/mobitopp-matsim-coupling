@@ -1,6 +1,6 @@
 package edu.kit.ifv.mobitopp.visum;
 
-import static edu.kit.ifv.mobitopp.simulation.publictransport.model.VisumBuilder.visumOrientedLink;
+import static edu.kit.ifv.mobitopp.visum.VisumBuilder.visumOrientedLink;
 
 import edu.kit.ifv.mobitopp.visum.VisumLink;
 import edu.kit.ifv.mobitopp.visum.VisumLinkType;
