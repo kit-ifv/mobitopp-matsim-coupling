@@ -20,7 +20,7 @@ configurations.all {
 }
 
 dependencies {
-    compile 'edu.kit.ifv.mobitopp:mobitopp:0.1.0',
+    compile 'edu.kit.ifv.mobitopp:mobitopp:0.1.1',
         'org.jvnet.ogc:kml-v_2_2_0:2.2.0',
         'org.matsim:matsim:0.7.0'
         
