@@ -11,6 +11,7 @@ repositories {
     mavenCentral()
     maven { url "http://mvn.collide.info/content/repositories/releases/" }
     maven { url "http://download.osgeo.org/webdav/geotools" }
+    maven { url project.ext["mobitopp.repository.url"] }
 }
 
 configurations.all {
