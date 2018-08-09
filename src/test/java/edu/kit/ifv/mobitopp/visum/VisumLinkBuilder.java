@@ -23,8 +23,9 @@ public class VisumLinkBuilder {
 	private VisumNode start;
 	private VisumNode end;
 	private VisumLinkType type;
-	private int speed;
+	private int walkSpeed;
 	private float length;
+	private int capacityCar;
 	private VisumTransportSystem transportSystem;
 
 	public VisumLinkBuilder() {
@@ -33,6 +34,10 @@ public class VisumLinkBuilder {
 		linkA = defaultLinkA;
 		linkB = defaultLinkB;
 		transportSystem = defaultTransportSystem();
+		type = defaultLinkA.linkType;
+		walkSpeed = defaultLinkA.attributes.walkSpeed;
+		length = defaultLinkA.length;
+		capacityCar = defaultLinkA.attributes.capacityCar;
 	}
 
 	private static VisumTransportSystem defaultTransportSystem() {
@@ -53,7 +58,8 @@ public class VisumLinkBuilder {
 				.withId(downLinkId())
 				.with(type)
 				.withLength(length)
-				.withWalkSpeed(speed)
+				.withWalkSpeed(walkSpeed)
+				.withCarCapacity(capacityCar)
 				.with(transportSystem)
 				.build();
 		VisumOrientedLink up = visumOrientedLink()
@@ -62,7 +68,8 @@ public class VisumLinkBuilder {
 				.withId(upLinkId())
 				.with(type)
 				.withLength(length)
-				.withWalkSpeed(speed)
+				.withWalkSpeed(walkSpeed)
+				.withCarCapacity(capacityCar)
 				.with(transportSystem)
 				.build();
 		return new VisumLink(id, down, up);
@@ -97,12 +104,17 @@ public class VisumLinkBuilder {
 	}
 
 	public VisumLinkBuilder withSpeed(int speed) {
-		this.speed = speed;
+		this.walkSpeed = speed;
 		return this;
 	}
 
 	public VisumLinkBuilder withLength(float length) {
 		this.length = length;
+		return this;
+	}
+	
+	public VisumLinkBuilder withCapacityCar(int capacity) {
+		this.capacityCar = capacity;
 		return this;
 	}
 
