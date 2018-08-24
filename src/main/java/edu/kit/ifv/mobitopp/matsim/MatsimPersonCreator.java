@@ -14,9 +14,9 @@ import org.matsim.api.core.v01.population.Person;
 import org.matsim.api.core.v01.population.Plan;
 import org.matsim.api.core.v01.population.Population;
 import org.matsim.api.core.v01.population.PopulationFactory;
-import org.matsim.api.core.v01.population.PopulationWriter;
 
 import edu.kit.ifv.mobitopp.data.Zone;
+import edu.kit.ifv.mobitopp.matsim.converter.ModeConverter;
 import edu.kit.ifv.mobitopp.simulation.ActivityType;
 import edu.kit.ifv.mobitopp.simulation.Mode;
 import edu.kit.ifv.mobitopp.simulation.activityschedule.ActivityIfc;
@@ -32,14 +32,15 @@ public class MatsimPersonCreator {
 
 	private final Time simulationStart;
 	private final Network network;
+	private final ModeConverter modeConverter;
 
 	public MatsimPersonCreator(Population population, Time simulationStart, Network network) {
-
+		super();
 		this.simulationStart=simulationStart;
-
 		this.population = population;
 		this.network = network;
 		this.populationFactory = population.getFactory();
+		modeConverter = new ModeConverter();
 	}
 
 	public List<Person> createPersons(
@@ -92,32 +93,6 @@ public class MatsimPersonCreator {
 		return persons;
 	}
 
-
-/*
-	public List<Person> createPersonsWithPlans(
-		List<edu.kit.ifv.mobitopp.simulation.Person> mobitoppPersons,
-		String weekday
-	) {
-
-		List<Person> persons = new ArrayList<Person>();
-
-		for (edu.kit.ifv.mobitopp.simulation.Person mp : mobitoppPersons) {
-
-			if (!mp.getActivitySchedule().isEmpty()) {
-
-				Person person = createPerson(mp);
-
-				Plan plan = createPlan(mp.getActivitySchedule());
-				person.addPlan(plan);
-
-				persons.add(person);
-			}
-		}
-
-		return persons;
-	}
-*/
-
 	public List<Person> createPlansForPersons(
 		List<edu.kit.ifv.mobitopp.simulation.Person> mobitoppPersons
 	) {
@@ -155,10 +130,6 @@ public class MatsimPersonCreator {
 	}
 
 	protected Person createPerson(edu.kit.ifv.mobitopp.simulation.Person mobitoppPerson) {
-
-
-		//System.out.println("creating person " + mobitoppPerson.getOid());
-
 		Integer personId = mobitoppPerson.getOid();
 
 		Person person = this.populationFactory.createPerson(
@@ -169,11 +140,6 @@ public class MatsimPersonCreator {
 		assert person != null;
 
 		this.population.addPerson(person);
-/*
-		Plan plan = createPlan(mobitoppPerson.getActivitySchedule());
-		person.addPlan(plan);
-*/
-
 		return person;
 	}
 
@@ -185,8 +151,6 @@ public class MatsimPersonCreator {
 
 		ActivityIfc current = schedule.firstActivity(); 
 
-// System.out.println(schedule);
-
 		if (current == null) return plan;
 
 		assert current != null;
@@ -194,20 +158,11 @@ public class MatsimPersonCreator {
 
 		plan.addActivity(createActivity(current));
 
-/*
-		for (ActivityIfc current = first;
-				 schedule.hasNextActivity(current);
-					current = schedule.nextActivity(current) 
-				)
-		{
-*/
-
-		// Nur Auto-Wege erzeugen!
 		while (schedule.hasNextActivity(current) && schedule.nextActivity(current).isLocationSet())
 		{
 			current = schedule.nextActivity(current);
 			
-			if(current.isLocationSet() && current.mode() == Mode.CAR) {
+			if(isModeAllowed(current)) {
 
 				plan.addLeg(createLeg(current));
 				plan.addActivity(createActivity(current));
@@ -215,6 +170,15 @@ public class MatsimPersonCreator {
 		}
 
 		return plan;
+	}
+
+	/**
+	 * Only allow car as mode
+	 * @param current
+	 * @return
+	 */
+	private boolean isModeAllowed(ActivityIfc current) {
+		return current.isLocationSet() && current.mode() == Mode.CAR;
 	}
 
 	protected Plan createPlan(ExternalTrip trip) {
@@ -306,17 +270,7 @@ public class MatsimPersonCreator {
 	}
 
 	protected String asMatsimMode(Mode mode) {
-
-		switch(mode) {
-
-			case BIKE: return TransportMode.bike;
-			case CAR: return TransportMode.car;
-			case PASSENGER: return TransportMode.ride; // Mitfahrer
-			case PEDESTRIAN: return TransportMode.walk;
-			case PUBLICTRANSPORT: return TransportMode.pt;
-		}
-
-		return TransportMode.car;
+		return modeConverter.toMatsim(mode);
 	}
 
 	protected String activityTypeAsString(ActivityType activityType) {
@@ -348,18 +302,8 @@ public class MatsimPersonCreator {
 	}
 
 	protected int timeInSeconds(Time t) {
-
-		// return (t.getHour()*60+t.getMinute())*60+t.getSecond();
-
 		return Math.toIntExact(t.differenceTo(this.simulationStart).seconds());
 	}
-
-	public void writePopulation(String filename) {
-
-		PopulationWriter writer = new PopulationWriter(this.population, null);
-		writer.write(filename);
-	}
-
 
 }
 
