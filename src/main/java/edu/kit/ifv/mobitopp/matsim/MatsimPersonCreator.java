@@ -16,6 +16,7 @@ import org.matsim.api.core.v01.population.Population;
 import org.matsim.api.core.v01.population.PopulationFactory;
 
 import edu.kit.ifv.mobitopp.data.Zone;
+import edu.kit.ifv.mobitopp.matsim.converter.ActivityTypeConverter;
 import edu.kit.ifv.mobitopp.matsim.converter.ModeConverter;
 import edu.kit.ifv.mobitopp.simulation.ActivityType;
 import edu.kit.ifv.mobitopp.simulation.Mode;
@@ -33,6 +34,7 @@ public class MatsimPersonCreator {
 	private final Time simulationStart;
 	private final Network network;
 	private final ModeConverter modeConverter;
+	private final ActivityTypeConverter activityTypeConverter;
 
 	public MatsimPersonCreator(Population population, Time simulationStart, Network network) {
 		super();
@@ -41,6 +43,7 @@ public class MatsimPersonCreator {
 		this.network = network;
 		this.populationFactory = population.getFactory();
 		modeConverter = new ModeConverter();
+		activityTypeConverter =  new ActivityTypeConverter();
 	}
 
 	public List<Person> createPersons(
@@ -274,31 +277,7 @@ public class MatsimPersonCreator {
 	}
 
 	protected String activityTypeAsString(ActivityType activityType) {
-
-		switch(activityType.getTypeAsInt()) {
-
-			case  1: return "WORK";
-			case  2: return "BUSINESS";
-			case  3: return "EDUCATION";
-			case  4: return "SHOPPING";
-			case  5: return "LEISURE";
-			case  6: return "SERVICE";
-			case  7: return "HOME";
-			case 11: return "PRIVATE_BUSINESS";
-			case 12: return "LEISURE";
-			case 41: return "SHOPPING";
-			case 42: return "SHOPPING";
-			case 51: return "LEISURE";
-			case 52: return "LEISURE";
-			case 53: return "LEISURE";
-			case 77: return "LEISURE";
-			case 31: return "EDUCATION";
-			case 32: return "EDUCATION";
-			case 33: return "EDUCATION";
-			case 34: return "EDUCATION";
-
-		}
-		return "UNKNOWN";
+		return activityTypeConverter.toMatsim(activityType);
 	}
 
 	protected int timeInSeconds(Time t) {
