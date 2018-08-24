@@ -8,18 +8,17 @@ import org.matsim.core.scenario.ScenarioUtils;
 
 import edu.kit.ifv.mobitopp.routing.ValidateLinks;
 import edu.kit.ifv.mobitopp.simulation.Matsim;
-import edu.kit.ifv.mobitopp.simulation.SimulationContext;
 import edu.kit.ifv.mobitopp.visum.VisumRoadNetwork;
 
 public class PrepareMatsim {
 
-	private final SimulationContext context;
+	private final MatsimContext context;
 
-	public PrepareMatsim(SimulationContext context) {
+	public PrepareMatsim(MatsimContext context) {
 		this.context = context;
 	}
 
-	public static Matsim from(SimulationContext context) {
+	public static Matsim from(MatsimContext context) {
 		return new PrepareMatsim(context).create();
 	}
 

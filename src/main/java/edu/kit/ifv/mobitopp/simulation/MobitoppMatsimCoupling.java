@@ -5,13 +5,15 @@ import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
+import edu.kit.ifv.mobitopp.matsim.MatsimContext;
+import edu.kit.ifv.mobitopp.matsim.MatsimContextBuilder;
 import edu.kit.ifv.mobitopp.matsim.PrepareMatsim;
 
 public class MobitoppMatsimCoupling {
 
-	private SimulationContext context;
+	private MatsimContext context;
 
-	public MobitoppMatsimCoupling(SimulationContext context) {
+	public MobitoppMatsimCoupling(MatsimContext context) {
 		super();
 		this.context = context;
 	}
@@ -40,7 +42,7 @@ public class MobitoppMatsimCoupling {
 	}
 
 	private static void startSimulation(File configurationFile) throws IOException {
-		SimulationContext context = new ContextBuilder().buildFrom(configurationFile);
+		MatsimContext context = new MatsimContextBuilder().buildFrom(configurationFile);
 		new MobitoppMatsimCoupling(context).simulate();
 	}
 

@@ -12,7 +12,7 @@
 </listAttribute>
 <stringAttribute key="org.eclipse.jdt.launching.CLASSPATH_PROVIDER" value="org.eclipse.buildship.core.classpathprovider"/>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="edu.kit.ifv.mobitopp.simulation.MobitoppMatsimCoupling"/>
-<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="data/simulation.yaml"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="data/simulation-test.yaml"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="mobitopp-matsim-coupling"/>
 <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx26G -Xss512M -ea"/>
 </launchConfiguration>
