@@ -6,6 +6,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 import java.awt.geom.Point2D;
@@ -25,6 +26,7 @@ import org.matsim.api.core.v01.population.PopulationFactory;
 import edu.kit.ifv.mobitopp.data.Zone;
 import edu.kit.ifv.mobitopp.simulation.ActivityType;
 import edu.kit.ifv.mobitopp.simulation.Location;
+import edu.kit.ifv.mobitopp.simulation.Mode;
 import edu.kit.ifv.mobitopp.simulation.activityschedule.ActivityIfc;
 import edu.kit.ifv.mobitopp.simulation.activityschedule.ActivityScheduleWithState;
 import edu.kit.ifv.mobitopp.time.Time;
@@ -32,46 +34,43 @@ import edu.kit.ifv.mobitopp.time.Time;
 public class MatsimPlanCreatorTest {
 
 	private static final int personId = 1;
-	private static final String zoneId = "Z1";
+	private static final String workZoneId = "Z1";
+	private static final String homeZoneId = "Z2";
 
-	private Location zoneCenter;
+	private Location workLocation;
+	private Location homeLocation;
 	private edu.kit.ifv.mobitopp.simulation.Person mobiToppPerson;
 	private Plan plan;
 	private Person matsimPerson;
-	private Activity matsimActivity;
 	private PopulationFactory factory;
 	private Network network;
+	private ActivityScheduleWithState schedule;
 
 	@Before
 	public void initialise() {
-		zoneCenter = new Location(new Point2D.Double(1.0d, 2.0d), 1, 0.5d);
-		Time simulationStart = Time.start;
-		Time activityStart = simulationStart.plusHours(1);
-		Time activityEnd = activityStart.plusHours(1);
+		workLocation = new Location(new Point2D.Double(1.0d, 2.0d), 1, 0.5d);
+		homeLocation = new Location(new Point2D.Double(3.0d, 4.0d), 2, 0.5d);
 		factory = mock(PopulationFactory.class);
 		network = mock(Network.class);
 		mobiToppPerson = mock(edu.kit.ifv.mobitopp.simulation.Person.class);
-		ActivityType activityType = ActivityType.WORK;
-		ActivityIfc activity = mock(ActivityIfc.class);
-		Zone zone = mock(Zone.class);
 		matsimPerson = mock(Person.class);
 		plan = mock(Plan.class);
-		ActivityScheduleWithState schedule = mock(ActivityScheduleWithState.class);
-		Id<Link> linkId = Id.createLinkId(zoneId + ":12");
-		matsimActivity = mock(Activity.class);
+		schedule = mock(ActivityScheduleWithState.class);
 
 		when(factory.createPlan()).thenReturn(plan);
-		when(factory.createActivityFromLinkId("WORK", linkId)).thenReturn(matsimActivity);
 		when(mobiToppPerson.activitySchedule()).thenReturn(schedule);
 		when(mobiToppPerson.getOid()).thenReturn(personId);
-		when(schedule.firstActivity()).thenReturn(activity);
-		when(zone.getId()).thenReturn(zoneId);
-		when(activity.zone()).thenReturn(zone);
-		when(activity.location()).thenReturn(zoneCenter);
-		when(activity.startDate()).thenReturn(activityStart);
-		when(activity.activityType()).thenReturn(activityType);
-		when(activity.calculatePlannedEndDate()).thenReturn(activityEnd);
 
+	}
+
+	private Activity createSingleActivity() {
+		ActivityType type = ActivityType.WORK;
+		Time simulationStart = Time.start;
+		Time start = simulationStart.plusHours(1);
+		ActivityIfc activity = createActivity(type, workZoneId, workLocation, start);
+		when(schedule.isEmpty()).thenReturn(false);
+		when(schedule.firstActivity()).thenReturn(activity);
+		return createMatsimActivity(type, workZoneId);
 	}
 
 	private DummyPopulation createPopulationWith(Person matsimPerson2) {
@@ -81,7 +80,24 @@ public class MatsimPlanCreatorTest {
 	}
 
 	@Test
+	public void createsNothingForEmptySchedule() {
+		configureEmptyActivitySchedule();
+
+		DummyPopulation population = createPopulationWith(matsimPerson);
+		MatsimPlanCreator creator = new MatsimPlanCreator(population, network);
+
+		creator.createPlansForPersons(asList(mobiToppPerson));
+
+		verifyZeroInteractions(matsimPerson);
+	}
+
+	private void configureEmptyActivitySchedule() {
+		when(schedule.isEmpty()).thenReturn(true);
+	}
+
+	@Test
 	public void clearsOldPlans() {
+		createSingleActivity();
 		Plan oldPlan = mock(Plan.class);
 		DummyPerson dummyPerson = new DummyPerson(oldPlan);
 		DummyPopulation population = createPopulationWith(dummyPerson);
@@ -95,14 +111,68 @@ public class MatsimPlanCreatorTest {
 
 	@Test
 	public void createsPlanFromActivity() {
+		Activity matsimWork = createSingleActivity();
 		DummyPopulation population = createPopulationWith(matsimPerson);
 		MatsimPlanCreator creator = new MatsimPlanCreator(population, network);
 
-		List<Person> matsimPersons = creator.createPlansForPersons(asList(mobiToppPerson));
-
-		Person matsimPerson = matsimPersons.iterator().next();
+		creator.createPlansForPersons(asList(mobiToppPerson));
 
 		verify(matsimPerson).addPlan(plan);
-		verify(plan).addActivity(matsimActivity);
+		verify(plan).addActivity(matsimWork);
+	}
+
+	@Test
+	public void createsPlansForSeveralActivities() {
+		List<Activity> matsimActivities = configureSeveralActivities();
+		DummyPopulation population = createPopulationWith(matsimPerson);
+		MatsimPlanCreator creator = new MatsimPlanCreator(population, network);
+
+		creator.createPlansForPersons(asList(mobiToppPerson));
+
+		verify(matsimPerson).addPlan(plan);
+		matsimActivities.forEach(a -> verify(plan).addActivity(a));
+	}
+
+	private List<Activity> configureSeveralActivities() {
+		ActivityType workType = ActivityType.WORK;
+		Time simulationStart = Time.start;
+		Time workStart = simulationStart.plusHours(1);
+		ActivityIfc workActivity = createActivity(workType, workZoneId, workLocation, workStart);
+		when(schedule.isEmpty()).thenReturn(false);
+		when(schedule.firstActivity()).thenReturn(workActivity);
+		Activity matsimWork = createMatsimActivity(workType, workZoneId);
+
+		ActivityType homeType = ActivityType.HOME;
+		String zoneId = homeZoneId;
+		Time homeStart = workActivity.calculatePlannedEndDate().plusHours(1);
+		ActivityIfc homeActivity = createActivity(homeType, zoneId, homeLocation, homeStart);
+		when(schedule.hasNextActivity(workActivity)).thenReturn(true);
+		when(schedule.nextActivity(workActivity)).thenReturn(homeActivity);
+		Activity matsimHome = createMatsimActivity(homeType, zoneId);
+
+		return asList(matsimWork, matsimHome);
+	}
+
+	private Activity createMatsimActivity(ActivityType type, String zoneId) {
+		Id<Link> linkId = Id.createLinkId(zoneId + ":12");
+		Activity matsimHome = mock(Activity.class);
+		when(factory.createActivityFromLinkId(type.getTypeAsString(), linkId)).thenReturn(matsimHome);
+		return matsimHome;
+	}
+
+	private ActivityIfc createActivity(
+			ActivityType type, String zoneId, Location location, Time start) {
+		Time end = start.plusHours(1);
+		Zone zone = mock(Zone.class);
+		ActivityIfc activity = mock(ActivityIfc.class);
+		when(zone.getId()).thenReturn(zoneId);
+		when(activity.zone()).thenReturn(zone);
+		when(activity.location()).thenReturn(location);
+		when(activity.startDate()).thenReturn(start);
+		when(activity.activityType()).thenReturn(type);
+		when(activity.calculatePlannedEndDate()).thenReturn(end);
+		when(activity.isLocationSet()).thenReturn(true);
+		when(activity.mode()).thenReturn(Mode.CAR);
+		return activity;
 	}
 }

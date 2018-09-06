@@ -35,73 +35,63 @@ public class MatsimPlanCreator {
 		this.network = network;
 		populationFactory = population.getFactory();
 		modeConverter = new ModeConverter();
-		activityTypeConverter =  new ActivityTypeConverter();
+		activityTypeConverter = new ActivityTypeConverter();
 	}
 
-	public List<Person> createPlansForPersons(
-			List<edu.kit.ifv.mobitopp.simulation.Person> mobitoppPersons) {
-
-		List<Person> persons = new ArrayList<Person>();
-
+	public void createPlansForPersons(List<edu.kit.ifv.mobitopp.simulation.Person> mobitoppPersons) {
 		for (edu.kit.ifv.mobitopp.simulation.Person mp : mobitoppPersons) {
-
 			if (!mp.activitySchedule().isEmpty()) {
-
-				Integer personId = mp.getOid();
-
-				Id<Person> matsimId = Id.createPersonId(personId);
-
-				Person person = this.population.getPersons().get(matsimId);
-
-				assert person != null : (this.population.getPersons());
-
-				// clear current plans
-				for (Plan plan : new ArrayList<Plan>(person.getPlans())) {
-
-					person.removePlan(plan);
-				}
-
+				Person person = findPersonFor(mp);
+				clearCurrentPlans(person);
 				Plan plan = createPlan(mp.activitySchedule());
 				person.addPlan(plan);
-
-				persons.add(person);
 			}
 		}
+	}
 
-		return persons;
+	private Person findPersonFor(edu.kit.ifv.mobitopp.simulation.Person mp) {
+		int personId = mp.getOid();
+		Id<Person> matsimId = Id.createPersonId(personId);
+		if (population.getPersons().containsKey(matsimId)) {
+			return this.population.getPersons().get(matsimId);
+		}
+		throw new IllegalArgumentException(
+				"No person in MATSim available for person in mobiTopp: " + personId);
+	}
+
+	private void clearCurrentPlans(Person person) {
+		for (Plan plan : new ArrayList<Plan>(person.getPlans())) {
+			person.removePlan(plan);
+		}
 	}
 
 	private Plan createPlan(ActivitySchedule schedule) {
-
 		assert schedule != null;
+		Plan toPlan = this.populationFactory.createPlan();
+		ActivityIfc current = schedule.firstActivity();
+		if (current == null) {
+			return toPlan;
+		}
 
-		Plan plan = this.populationFactory.createPlan();
+		toPlan.addActivity(createActivity(current));
+		current = addActivitiesFrom(schedule, toPlan, current);
+		return toPlan;
+	}
 
-		ActivityIfc current = schedule.firstActivity(); 
-
-		if (current == null) return plan;
-
-		assert current != null;
-
-
-		plan.addActivity(createActivity(current));
-
-		while (schedule.hasNextActivity(current) && schedule.nextActivity(current).isLocationSet())
-		{
+	private ActivityIfc addActivitiesFrom(ActivitySchedule schedule, Plan plan, ActivityIfc current) {
+		while (schedule.hasNextActivity(current) && schedule.nextActivity(current).isLocationSet()) {
 			current = schedule.nextActivity(current);
-			
-			if(isModeAllowed(current)) {
-
+			if (isModeAllowed(current)) {
 				plan.addLeg(createLeg(current));
 				plan.addActivity(createActivity(current));
 			}
 		}
-
-		return plan;
+		return current;
 	}
-	
+
 	/**
 	 * Only allow car as mode
+	 * 
 	 * @param current
 	 * @return
 	 */
@@ -158,7 +148,7 @@ public class MatsimPlanCreator {
 		String zoneId = mobitopp.zone().getId();
 		return Id.createLinkId("" + zoneId + ":12");
 	}
-	
+
 	private Leg createLeg(edu.kit.ifv.mobitopp.simulation.activityschedule.ActivityIfc mobitopp) {
 		Mode mode = mobitopp.isModeSet() ? mobitopp.mode() : Mode.PEDESTRIAN;
 		return populationFactory.createLeg(asMatsimMode(mode));
