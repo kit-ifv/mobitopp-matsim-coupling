@@ -1,52 +1,86 @@
 package edu.kit.ifv.mobitopp.matsim;
 
+import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.when;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map.Entry;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.matsim.api.core.v01.TransportMode;
-import org.matsim.api.core.v01.network.Network;
+import org.matsim.api.core.v01.Id;
+import org.matsim.api.core.v01.population.Person;
 import org.matsim.api.core.v01.population.Population;
+import org.matsim.api.core.v01.population.PopulationFactory;
 
-import edu.kit.ifv.mobitopp.simulation.Mode;
-import edu.kit.ifv.mobitopp.time.Time;
+import edu.kit.ifv.mobitopp.simulation.activityschedule.ActivityScheduleWithState;
 
 public class MatsimPersonCreatorTest {
 
+	private static final int personId = 1;
 	private MatsimPersonCreator creator;
+	private edu.kit.ifv.mobitopp.simulation.Person mobiToppPerson;
+	private Person matsimPerson;
+	private Population population;
+	private PopulationFactory factory;
 
 	@Before
 	public void initialise() {
-		Population population = mock(Population.class);
-		Time simulationStart = Time.start;
-		Network network = mock(Network.class);
-		creator = new MatsimPersonCreator(population, simulationStart, network);
+		factory = mock(PopulationFactory.class);
+		mobiToppPerson = mock(edu.kit.ifv.mobitopp.simulation.Person.class);
+		matsimPerson = mock(Person.class);
+		Id<Person> matsimId = Id.createPersonId(personId);
+		population = mock(Population.class);
+
+		when(population.getFactory()).thenReturn(factory);
+		when(factory.createPerson(matsimId)).thenReturn(matsimPerson);
+		when(mobiToppPerson.getOid()).thenReturn(personId);
+
+		creator = new MatsimPersonCreator(population);
+	}
+
+	@Test
+	public void createsAgents() {
+		configureScheduleWithActivities();
+
+		List<Person> matsimPersons = creator.createPersons(asList(mobiToppPerson));
+
+		Person matsimPerson = matsimPersons.iterator().next();
+
+		assertThat(matsimPerson, is(equalTo(this.matsimPerson)));
+
+		verify(population).addPerson(matsimPerson);
+	}
+
+	private void configureScheduleWithActivities() {
+		ActivityScheduleWithState schedule = mock(ActivityScheduleWithState.class);
+		when(mobiToppPerson.activitySchedule()).thenReturn(schedule);
+		when(schedule.isEmpty()).thenReturn(false);
 	}
 	
 	@Test
-	public void convertsModeToMatsim() {
-		HashMap<Mode, String> mapping = new HashMap<>();
-		Arrays.stream(Mode.values()).forEach(mode -> mapping.put(mode, TransportMode.car));
-		mapping.put(Mode.BIKE, TransportMode.bike);
-		mapping.put(Mode.CAR, TransportMode.car);
-		mapping.put(Mode.PASSENGER, TransportMode.ride);
-		mapping.put(Mode.PEDESTRIAN, TransportMode.walk);
-		mapping.put(Mode.PUBLICTRANSPORT, TransportMode.pt);
-		for (Entry<Mode, String> entry : mapping.entrySet()) {
-			evaluate(entry.getKey(), entry.getValue());
-		}
+	public void createsNoAgentsWithEmptySchedule() {
+		configureEmptySchedule();
+		
+		List<Person> matsimPersons = creator.createPersons(asList(mobiToppPerson));
+		
+		assertThat(matsimPersons, is(empty()));
+		
+		verify(population).getFactory();
+		verifyNoMoreInteractions(population);
+		verifyZeroInteractions(factory);
 	}
 
-	private void evaluate(Mode mobiTopp, String matsim) {
-		String matsimMode = creator.asMatsimMode(mobiTopp);
-
-		assertThat(matsimMode, is(equalTo(matsim)));
+	private void configureEmptySchedule() {
+		ActivityScheduleWithState schedule = mock(ActivityScheduleWithState.class);
+		when(mobiToppPerson.activitySchedule()).thenReturn(schedule);
+		when(schedule.isEmpty()).thenReturn(true);
 	}
 }
