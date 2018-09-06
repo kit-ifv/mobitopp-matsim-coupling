@@ -8,6 +8,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.awt.geom.Point2D;
 import java.util.List;
 import java.util.Map;
 
@@ -22,7 +23,6 @@ import org.matsim.api.core.v01.population.Plan;
 import org.matsim.api.core.v01.population.PopulationFactory;
 
 import edu.kit.ifv.mobitopp.data.Zone;
-import edu.kit.ifv.mobitopp.populationsynthesis.Example;
 import edu.kit.ifv.mobitopp.simulation.ActivityType;
 import edu.kit.ifv.mobitopp.simulation.Location;
 import edu.kit.ifv.mobitopp.simulation.activityschedule.ActivityIfc;
@@ -33,8 +33,8 @@ public class MatsimPlanCreatorTest {
 
 	private static final int personId = 1;
 	private static final String zoneId = "Z1";
-	private static final Location zoneCenter = Example.location;
 
+	private Location zoneCenter;
 	private edu.kit.ifv.mobitopp.simulation.Person mobiToppPerson;
 	private Plan plan;
 	private Person matsimPerson;
@@ -44,6 +44,7 @@ public class MatsimPlanCreatorTest {
 
 	@Before
 	public void initialise() {
+		zoneCenter = new Location(new Point2D.Double(1.0d, 2.0d), 1, 0.5d);
 		Time simulationStart = Time.start;
 		Time activityStart = simulationStart.plusHours(1);
 		Time activityEnd = activityStart.plusHours(1);
