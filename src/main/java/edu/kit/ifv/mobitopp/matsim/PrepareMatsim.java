@@ -1,5 +1,7 @@
 package edu.kit.ifv.mobitopp.matsim;
 
+import java.io.File;
+
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigUtils;
@@ -12,6 +14,7 @@ import edu.kit.ifv.mobitopp.visum.VisumRoadNetwork;
 
 public class PrepareMatsim {
 
+	static final String resultFolder = "matsim";
 	private final MatsimContext context;
 
 	public PrepareMatsim(MatsimContext context) {
@@ -48,7 +51,14 @@ public class PrepareMatsim {
 				.controler()
 				.setOverwriteFileSetting(
 						OutputDirectoryHierarchy.OverwriteFileSetting.deleteDirectoryIfExists);
+		updateResultFolder(config);
 		return config;
+	}
+
+	void updateResultFolder(Config config) {
+		String baseFolder = context.configuration().getResultFolder();
+		String matsimResults = new File(baseFolder, resultFolder).getAbsolutePath();
+		config.controler().setOutputDirectory(matsimResults);
 	}
 
 }
