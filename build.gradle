@@ -41,7 +41,12 @@ task runPopulationSynthesis(type: JavaExec) {
 
 task runSimulation(type: JavaExec) {
     args = ['data/simulation.yaml']
-    main = "edu.kit.ifv.mobitopp.simulation.SimulationMatsim"
+    main = "edu.kit.ifv.mobitopp.simulation.MobitoppMatsimCoupling"
+}
+
+task runMobitopp(type: JavaExec) {
+    args = ['data/simulation.yaml']
+    main = "edu.kit.ifv.mobitopp.simulation.OnlyMobiTopp"
 }
 
 tasks.withType(JavaExec) {

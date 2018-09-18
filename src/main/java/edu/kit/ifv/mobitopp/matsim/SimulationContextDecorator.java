@@ -70,6 +70,11 @@ public class SimulationContextDecorator implements SimulationContext {
 	public PersonLoader personLoader() {
 		return baseContext.personLoader();
 	}
+	
+	@Override
+	public DynamicParameters modeChoiceParameters() {
+		return baseContext.modeChoiceParameters();
+	}
 
 	@Override
 	public ResultWriter results() {

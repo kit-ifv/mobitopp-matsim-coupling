@@ -1,5 +1,7 @@
 package edu.kit.ifv.mobitopp.simulation;
 
+import java.io.File;
+
 import edu.kit.ifv.mobitopp.simulation.activityschedule.randomizer.DefaultActivityDurationRandomizer;
 import edu.kit.ifv.mobitopp.simulation.destinationChoice.CarRangeReachableZonesFilter;
 import edu.kit.ifv.mobitopp.simulation.destinationChoice.DestinationChoiceForFlexibleActivity;
@@ -37,11 +39,17 @@ public class Mobitopp extends Simulation {
 	}
 
 	private ModeChoiceModel modeSelector(ModeAvailabilityModel modeAvailabilityModel) {
+		File firstTripFile = getModeChoiceFile("firstTrip");
+		File otherTripFile = getModeChoiceFile("otherTrip");
 		ModeChoiceModel modeSelectorFirst = new ModeChoiceStuttgart(impedance(),
-				new ModeSelectorParameterFirstTrip());
+				new ModeSelectorParameterFirstTrip(firstTripFile));
 		ModeChoiceModel modeSelectorOther = new ModeChoiceStuttgart(impedance(),
-				new ModeSelectorParameterOtherTrip());
+				new ModeSelectorParameterOtherTrip(otherTripFile));
 		return new ModeSelectorFirstOther(modeAvailabilityModel, modeSelectorFirst, modeSelectorOther);
+	}
+
+	private File getModeChoiceFile(String fileName) {
+		return context().modeChoiceParameters().valueAsFile(fileName);
 	}
 
 	private DestinationChoiceModel destinationChoiceModel(
