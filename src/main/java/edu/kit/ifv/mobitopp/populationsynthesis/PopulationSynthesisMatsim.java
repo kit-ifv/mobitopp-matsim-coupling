@@ -22,7 +22,7 @@ import edu.kit.ifv.mobitopp.simulation.ImpedanceIfc;
 import edu.kit.ifv.mobitopp.simulation.carsharing.CarSharingCustomerModel;
 import edu.kit.ifv.mobitopp.simulation.emobility.EmobilityPersonCreator;
 
-public class PopulationSynthesisMatsim extends PopulationSynthesis {
+public class PopulationSynthesisMatsim extends BasicPopulationSynthesis {
 
 	private static final int maxVelocity = 50;
 	private static final double maxDistance = 1.0d;
@@ -34,6 +34,11 @@ public class PopulationSynthesisMatsim extends PopulationSynthesis {
 
 		super(carOwnershipModel, householdLocationSelector, chargePrivatelySelector, personCreator,
 				context);
+	}
+	
+	@Override
+	protected OpportunityLocationSelector createOpportunityLocationSelector() {
+		return new RoadBasedOpportunitySelector(context(), edgeFilter(), maxDistance);
 	}
 
 	public static void main(String... args) throws Exception {
@@ -53,7 +58,6 @@ public class PopulationSynthesisMatsim extends PopulationSynthesis {
 	public static PopulationSynthesisMatsim startSynthesis(File configurationFile) throws Exception {
 		SynthesisContext context = new ValidatedRoadContextBuilder().buildFrom(configurationFile);
 		PopulationSynthesisMatsim synthesizer = populationSynthesis(context);
-		createLocations(context, synthesizer);
 		synthesizer.createPopulation();
 		return synthesizer;
 	}
@@ -115,14 +119,6 @@ public class PopulationSynthesisMatsim extends PopulationSynthesis {
 			SynthesisContext context) {
 		return new PopulationSynthesisMatsim(carOwnershipModel, householdLocationSelector,
 				chargePrivatelySelector, personCreator, context);
-	}
-
-	private static void createLocations(SynthesisContext context, PopulationSynthesis synthesizer) {
-		System.out.println("creating destinations...");
-		OpportunityLocationSelector opportunityLocationSelector = new RoadBasedOpportunitySelector(
-				context, edgeFilter(), maxDistance);
-		synthesizer.createLocations(opportunityLocationSelector);
-		System.out.println("creating DONE.");
 	}
 
 }
