@@ -1,5 +1,5 @@
 rootProject.name = 'mobitopp-matsim-coupling'
 
-if (startParameter.searchUpwards && hasProperty('pathToMobitopp') && file(pathToMobitopp).exists()) {
+if (hasProperty('pathToMobitopp') && file(pathToMobitopp).exists()) {
   includeBuild pathToMobitopp
 }
