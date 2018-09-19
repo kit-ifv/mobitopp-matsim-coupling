@@ -10,7 +10,6 @@ destinationChoice:
   repetition: data/parameters/TargetParameterRepetition.csv
   cost: data/parameters/TargetParameterCost.txt
 modeChoice:
-  choice: data/parameters/ModeChoiceParameterSimple.txt
   firstTrip: data/parameters/ModeSelectorParameterFirstTrip.txt
   otherTrip: data/parameters/ModeSelectorParameterOtherTrip.txt
 fractionOfPopulation: 0.001
