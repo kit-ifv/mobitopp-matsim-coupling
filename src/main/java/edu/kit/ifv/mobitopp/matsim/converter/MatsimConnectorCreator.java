@@ -55,7 +55,8 @@ public class MatsimConnectorCreator extends BaseLinkCreator {
 	}
 
 	private float linkLengthFor(VisumConnector connector) {
-		return CONNECTOR_FREESPEED * connector.travelTimeInSeconds;
+		float travelTimeInHours = connector.travelTimeInSeconds / 3600.0f;
+    return CONNECTOR_FREESPEED * travelTimeInHours;
 	}
 	
 	private boolean isCar(Set<VisumTransportSystem> transport) {
