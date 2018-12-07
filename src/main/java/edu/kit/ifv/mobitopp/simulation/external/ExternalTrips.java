@@ -5,6 +5,10 @@ import java.util.List;
 import java.util.Random;
 import java.util.TreeSet;
 
+import org.matsim.api.core.v01.Id;
+import org.matsim.api.core.v01.network.Link;
+import org.matsim.api.core.v01.network.Network;
+
 import edu.kit.ifv.mobitopp.data.Zone;
 import edu.kit.ifv.mobitopp.data.ZoneRepository;
 import edu.kit.ifv.mobitopp.simulation.ActivityType;
@@ -18,13 +22,15 @@ public class ExternalTrips {
   private final List<VisumMatrix> totalTrips;
   private final HourlyTimeProfile timeProfile;
   private final ZoneRepository zoneRepository;
+  private final Network network;
   private final Random rnd_trips = new Random(1234);
   private final Random rnd_time = new Random(1234);
   private final Random rnd_location = new Random(1234);
   private int id_seq = 0;
 
   public ExternalTrips(
-      List<VisumMatrix> totalTrips, HourlyTimeProfile timeProfile, ZoneRepository zoneRepository) {
+      List<VisumMatrix> totalTrips, HourlyTimeProfile timeProfile, ZoneRepository zoneRepository,
+      Network network) {
 
     assert totalTrips != null;
     assert totalTrips.size() > 0;
@@ -32,6 +38,7 @@ public class ExternalTrips {
     this.totalTrips = totalTrips;
     this.timeProfile = timeProfile;
     this.zoneRepository = zoneRepository;
+    this.network = network;
 
     totalTrips.size();
   }
@@ -103,21 +110,35 @@ public class ExternalTrips {
     if (hasOpportunities(origin) && hasOpportunities(destination)) {
       Location originLocation = selectLocationIn(origin);
       Location destinationLocation = selectLocationIn(destination);
-      int from = originLocation.roadAccessEdgeId;
-      int to = destinationLocation.roadAccessEdgeId;
+      Id<Link> from = linkIdOf(originLocation);
+      Id<Link> to = linkIdOf(destinationLocation);
       return new LocationToLocation(id_seq++, from, to, startTime);
     }
     if (hasOpportunities(origin)) {
       Location location = selectLocationIn(origin);
-      int from = location.roadAccessEdgeId;
+      Id<Link> from = linkIdOf(location);
       return new FromLocation(id_seq++, from, destinationId, startTime);
     }
     if (hasOpportunities(destination)) {
       Location location = selectLocationIn(destination);
-      int to = location.roadAccessEdgeId;
+      Id<Link> to = linkIdOf(location);
       return new ToLocation(id_seq++, originId, to, startTime);
     }
     return new ZoneToZone(id_seq++, originId, destinationId, startTime);
+  }
+  
+  private Id<Link> linkIdOf(Location location) {
+    int edgeId = location.roadAccessEdgeId;
+    int linkId = Math.abs(edgeId);
+    Id<Link> forwardLink = Id.createLinkId(linkId + ":1");
+    if (network.getLinks().containsKey(forwardLink)) {
+      return forwardLink;
+    }
+    Id<Link> backwardLink = Id.createLinkId(linkId + ":2");
+    if (network.getLinks().containsKey(backwardLink)) {
+      return backwardLink;
+    }
+    throw new IllegalArgumentException("Link does not exist: " + location.roadAccessEdgeId);
   }
 
   private Location selectLocationIn(Zone origin) {

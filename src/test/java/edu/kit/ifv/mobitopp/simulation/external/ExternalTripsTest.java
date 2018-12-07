@@ -2,6 +2,7 @@ package edu.kit.ifv.mobitopp.simulation.external;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonMap;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -16,6 +17,9 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.matsim.api.core.v01.Id;
+import org.matsim.api.core.v01.network.Link;
+import org.matsim.api.core.v01.network.Network;
 
 import edu.kit.ifv.mobitopp.data.FloatMatrix;
 import edu.kit.ifv.mobitopp.data.Zone;
@@ -36,6 +40,7 @@ public class ExternalTripsTest {
   private static final Double dummyPoint = new Point2D.Double(0.0d, 0.0d);
   private static final int dummyAccessEdge = -1;
   private static final Location dummyLocation = new Location(dummyPoint, dummyAccessEdge, 0.0d);
+  private static final Id<Link> dummyLinkId = Id.createLinkId(Math.abs(dummyAccessEdge) + ":1");
   private ExternalTrips trips;
   private Zone origin;
   private Zone destination;
@@ -57,8 +62,11 @@ public class ExternalTripsTest {
     destinationOpportunities = mock(OpportunityDataForZone.class);
     when(origin.opportunities()).thenReturn(originOpportunities);
     when(destination.opportunities()).thenReturn(destinationOpportunities);
+    Network network = mock(Network.class);
+    Link link = mock(Link.class);
+    when(network.getLinks()).thenAnswer(invocation -> singletonMap(dummyLinkId, link));
 
-    trips = new ExternalTrips(totalTrips, timeProfile, zoneRepository);
+    trips = new ExternalTrips(totalTrips, timeProfile, zoneRepository, network);
   }
 
   @Test
@@ -72,33 +80,33 @@ public class ExternalTripsTest {
   @Test
   public void createFromLocationTrip() {
     setOriginAvailable();
-    int from = dummyAccessEdge;
+    Id<Link> from = dummyLinkId;
     int to = 2;
     ExternalTrip trip = trips.createTrip(origin, destination, hour);
 
     ExternalTrip fromTrip = new FromLocation(trip.id(), from, to, startTime);
     assertThat(trip, is(equalTo(fromTrip)));
   }
-  
+
   @Test
   public void createToLocationTrip() {
     setDestinationAvailable();
     int from = 1;
-    int to = dummyAccessEdge;
+    Id<Link> to = dummyLinkId;
     ExternalTrip trip = trips.createTrip(origin, destination, hour);
-    
+
     ExternalTrip fromTrip = new ToLocation(trip.id(), from, to, startTime);
     assertThat(trip, is(equalTo(fromTrip)));
   }
-  
+
   @Test
   public void createLocationToLocationTrip() {
     setOriginAvailable();
     setDestinationAvailable();
-    int from = dummyAccessEdge;
-    int to = dummyAccessEdge;
+    Id<Link> from = dummyLinkId;
+    Id<Link> to = dummyLinkId;
     ExternalTrip trip = trips.createTrip(origin, destination, hour);
-    
+
     ExternalTrip fromTrip = new LocationToLocation(trip.id(), from, to, startTime);
     assertThat(trip, is(equalTo(fromTrip)));
   }

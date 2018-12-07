@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import org.matsim.api.core.v01.network.Network;
 import org.matsim.api.core.v01.population.Population;
 
 import edu.kit.ifv.mobitopp.data.ZoneRepository;
@@ -23,17 +24,17 @@ public class ExternalDemandCreator {
 		this.context = context;
 	}
 
-	public void addDemandTo(Population population) {
+	public void addDemandTo(Population population, Network network) {
 		System.out.println("Create external demand");
 		List<VisumMatrix> matrices = externalTraffic();
-		Collection<ExternalTrip> trips = createExternalTrips(matrices);
+		Collection<ExternalTrip> trips = createExternalTrips(matrices, network);
 		ExternalPersonCreator externalCreator = new ExternalPersonCreator(population);
 		externalCreator.createPersonsWithPlansFor(trips);
 		System.out.println(externalCreator.personsCreated() + " matsim persons created.");
 	}
 
-	private Collection<ExternalTrip> createExternalTrips(List<VisumMatrix> matrices) {
-		ExternalTrips etm = new ExternalTrips(matrices, HourlyTimeProfile.DEFAULT, zoneRepository());
+	private Collection<ExternalTrip> createExternalTrips(List<VisumMatrix> matrices, Network network) {
+		ExternalTrips etm = new ExternalTrips(matrices, HourlyTimeProfile.DEFAULT, zoneRepository(), network);
 		Collection<ExternalTrip> trips = etm.trips(fraction());
 		return trips;
 	}

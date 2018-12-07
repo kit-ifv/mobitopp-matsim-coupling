@@ -9,6 +9,7 @@ import org.matsim.api.core.v01.network.Network;
 import org.matsim.api.core.v01.population.Population;
 import org.matsim.core.controler.Controler;
 
+import edu.kit.ifv.mobitopp.matsim.ActivityFilter;
 import edu.kit.ifv.mobitopp.matsim.ExternalDemandCreator;
 import edu.kit.ifv.mobitopp.matsim.MatsimPersonCreator;
 import edu.kit.ifv.mobitopp.matsim.MatsimPlanCreator;
@@ -19,10 +20,12 @@ public class Matsim {
 	private final Scenario scenario;
 	private final Network network;
 	private final Population population;
+	private final ActivityFilter filter;
 
-	public Matsim(SimulationContext context, Scenario scenario) {
+	public Matsim(SimulationContext context, Scenario scenario, ActivityFilter filter) {
 		this.context = context;
 		this.scenario = scenario;
+		this.filter = filter;
 		this.network = scenario.getNetwork();
 		this.population = scenario.getPopulation();
 	}
@@ -44,7 +47,7 @@ public class Matsim {
 
 	private void createExternalDemand() {
 		ExternalDemandCreator demandCreator = new ExternalDemandCreator(context);
-		demandCreator.addDemandTo(population);
+		demandCreator.addDemandTo(population, network);
 	}
 
 	private List<Person> persons() {
@@ -60,8 +63,12 @@ public class Matsim {
 	public void createPlans() {
 		System.out.println("Create plans for matsim persons");
 		List<Person> persons = persons();
-		MatsimPlanCreator creator = new MatsimPlanCreator(population, network);
+		MatsimPlanCreator creator = planCreator(population, network);
 		creator.createPlansForPersons(persons);
+	}
+
+	private MatsimPlanCreator planCreator(Population population, Network network) {
+		return new MatsimPlanCreator(population, network, filter);
 	}
 
 	public void simulate() {

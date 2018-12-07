@@ -1,18 +1,20 @@
 package edu.kit.ifv.mobitopp.simulation.external;
 
+import org.matsim.api.core.v01.Id;
+import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.population.Activity;
 
 import edu.kit.ifv.mobitopp.time.Time;
 
 public class LocationToLocation extends ExternalTrip {
 
-  private final int originLink;
-  private final int destinationLink;
+  private final Id<Link> originLink;
+  private final Id<Link> destinationLink;
 
-  public LocationToLocation(int id, int originLink, int destinationLink, Time startTime) {
+  public LocationToLocation(int id, Id<Link> from, Id<Link> to, Time startTime) {
     super(id, startTime);
-    this.originLink = originLink;
-    this.destinationLink = destinationLink;
+    this.originLink = from;
+    this.destinationLink = to;
   }
 
   @Override
@@ -29,8 +31,8 @@ public class LocationToLocation extends ExternalTrip {
   public int hashCode() {
     final int prime = 31;
     int result = super.hashCode();
-    result = prime * result + destinationLink;
-    result = prime * result + originLink;
+    result = prime * result + ((destinationLink == null) ? 0 : destinationLink.hashCode());
+    result = prime * result + ((originLink == null) ? 0 : originLink.hashCode());
     return result;
   }
 
@@ -43,9 +45,15 @@ public class LocationToLocation extends ExternalTrip {
     if (getClass() != obj.getClass())
       return false;
     LocationToLocation other = (LocationToLocation) obj;
-    if (destinationLink != other.destinationLink)
+    if (destinationLink == null) {
+      if (other.destinationLink != null)
+        return false;
+    } else if (!destinationLink.equals(other.destinationLink))
       return false;
-    if (originLink != other.originLink)
+    if (originLink == null) {
+      if (other.originLink != null)
+        return false;
+    } else if (!originLink.equals(other.originLink))
       return false;
     return true;
   }

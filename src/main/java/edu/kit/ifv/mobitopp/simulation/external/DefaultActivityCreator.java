@@ -15,13 +15,8 @@ public class DefaultActivityCreator implements ActivityCreator {
   }
 
   @Override
-  public Activity activityForLink(String suffix, int onLink) {
-    Id<Link> linkId = createLinkId(onLink);
+  public Activity activityForLink(String suffix, Id<Link> linkId) {
     return populationFactory.createActivityFromLinkId(suffix, linkId);
-  }
-
-  private Id<Link> createLinkId(int onLink) {
-    return Id.createLinkId(onLink);
   }
 
   @Override

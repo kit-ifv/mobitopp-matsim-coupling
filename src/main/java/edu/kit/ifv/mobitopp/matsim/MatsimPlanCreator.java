@@ -28,14 +28,20 @@ public class MatsimPlanCreator {
 	private final PopulationFactory populationFactory;
 	private final ModeConverter modeConverter;
 	private final ActivityTypeConverter activityTypeConverter;
+	private final ActivityFilter activityFilter;
 
-	public MatsimPlanCreator(Population population, Network network) {
+	public MatsimPlanCreator(Population population, Network network, ActivityFilter filter) {
 		super();
 		this.population = population;
 		this.network = network;
 		populationFactory = population.getFactory();
 		modeConverter = new ModeConverter();
 		activityTypeConverter = new ActivityTypeConverter();
+		activityFilter = filter;
+	}
+
+	public MatsimPlanCreator(Population population, Network network) {
+		this(population, network, new CarOnly());
 	}
 
 	public void createPlansForPersons(List<edu.kit.ifv.mobitopp.simulation.Person> mobitoppPersons) {
@@ -96,7 +102,7 @@ public class MatsimPlanCreator {
 	 * @return
 	 */
 	private boolean isModeAllowed(ActivityIfc current) {
-		return current.isLocationSet() && current.mode() == Mode.CAR;
+		return activityFilter.isAllowed(current);
 	}
 
 	private Activity createActivity(ActivityIfc mobitopp) {

@@ -1,10 +1,13 @@
 package edu.kit.ifv.mobitopp.simulation.external;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import org.matsim.api.core.v01.Id;
+import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.population.Activity;
 
 import edu.kit.ifv.mobitopp.time.SimpleTime;
@@ -15,7 +18,9 @@ public class ExternalTripTestData {
   final String suffix = "suffix";
   final int tripId = 0;
   final int from = 1;
+  final Id<Link> fromLink = Id.createLinkId(from);
   final int to = 2;
+  final Id<Link> toLink = Id.createLinkId(to);
   final int hour = 3;
   final int minute = 4;
   final Activity zoneActivity;
@@ -40,7 +45,7 @@ public class ExternalTripTestData {
     Activity linkActivity = mock(Activity.class);
     ActivityCreator activityCreator = mock(ActivityCreator.class);
     when(activityCreator.activityForZone(anyString(), anyInt())).thenReturn(zoneActivity);
-    when(activityCreator.activityForLink(anyString(), anyInt())).thenReturn(linkActivity);
+    when(activityCreator.activityForLink(anyString(), any())).thenReturn(linkActivity);
     return new ExternalTripTestData(zoneActivity, linkActivity, activityCreator);
   }
 }

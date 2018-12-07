@@ -1,15 +1,17 @@
 package edu.kit.ifv.mobitopp.simulation.external;
 
+import org.matsim.api.core.v01.Id;
+import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.population.Activity;
 
 import edu.kit.ifv.mobitopp.time.Time;
 
 public class FromLocation extends ExternalTrip {
 
-  private final int from;
+  private final Id<Link> from;
   private final int to;
 
-  public FromLocation(int id, int from, int to, Time startTime) {
+  public FromLocation(int id, Id<Link> from, int to, Time startTime) {
     super(id, startTime);
     this.from = from;
     this.to = to;
@@ -29,7 +31,7 @@ public class FromLocation extends ExternalTrip {
   public int hashCode() {
     final int prime = 31;
     int result = super.hashCode();
-    result = prime * result + from;
+    result = prime * result + ((from == null) ? 0 : from.hashCode());
     result = prime * result + to;
     return result;
   }
@@ -43,7 +45,10 @@ public class FromLocation extends ExternalTrip {
     if (getClass() != obj.getClass())
       return false;
     FromLocation other = (FromLocation) obj;
-    if (from != other.from)
+    if (from == null) {
+      if (other.from != null)
+        return false;
+    } else if (!from.equals(other.from))
       return false;
     if (to != other.to)
       return false;

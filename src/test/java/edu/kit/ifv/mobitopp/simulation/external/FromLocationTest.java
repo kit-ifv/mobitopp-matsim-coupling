@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.matsim.api.core.v01.population.Activity;
 
 import nl.jqno.equalsverifier.EqualsVerifier;
+import nl.jqno.equalsverifier.Warning;
 
 public class FromLocationTest {
 
@@ -20,7 +21,7 @@ public class FromLocationTest {
   @Before
   public void initialise() {
     testData = ExternalTripTestData.create();
-    trip = new FromLocation(testData.tripId, testData.from, testData.to, testData.startTime);
+    trip = new FromLocation(testData.tripId, testData.fromLink, testData.to, testData.startTime);
   }
 
   @Test
@@ -39,12 +40,12 @@ public class FromLocationTest {
 
     assertThat(destination, is(sameInstance(testData.linkActivity)));
 
-    verify(testData.activityCreator).activityForLink(testData.suffix, testData.from);
+    verify(testData.activityCreator).activityForLink(testData.suffix, testData.fromLink);
     verifyNoMoreInteractions(testData.activityCreator);
   }
 
   @Test
   public void equalsAndHashCode() {
-    EqualsVerifier.forClass(FromLocation.class).usingGetClass().verify();
+    EqualsVerifier.forClass(FromLocation.class).suppress(Warning.REFERENCE_EQUALITY).usingGetClass().verify();
   }
 }

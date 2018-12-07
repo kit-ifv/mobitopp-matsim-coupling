@@ -20,15 +20,19 @@ public class PrepareMatsim {
 	public PrepareMatsim(MatsimContext context) {
 		this.context = context;
 	}
-
+	
 	public static Matsim from(MatsimContext context) {
-		return new PrepareMatsim(context).create();
+		return from(context, new CarOnly());
 	}
 
-	private Matsim create() {
+	public static Matsim from(MatsimContext context, ActivityFilter filter) {
+		return new PrepareMatsim(context).create(filter);
+	}
+
+	private Matsim create(ActivityFilter filter) {
 		Scenario scenario = createScenario();
 		loadNetwork(scenario);
-		return new Matsim(context, scenario);
+		return new Matsim(context, scenario, filter);
 	}
 
 	private void loadNetwork(Scenario scenario) {
