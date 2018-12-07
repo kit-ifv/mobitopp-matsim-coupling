@@ -1,5 +1,6 @@
 package edu.kit.ifv.mobitopp.simulation.external;
 
+import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -16,6 +17,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import edu.kit.ifv.mobitopp.data.FloatMatrix;
 import edu.kit.ifv.mobitopp.data.Zone;
 import edu.kit.ifv.mobitopp.data.ZoneRepository;
 import edu.kit.ifv.mobitopp.simulation.ActivityType;
@@ -44,7 +46,7 @@ public class ExternalTripsTest {
   @Before
   public void initialise() {
     startTime = SimpleTime.ofHours(hour).plusMinutes(minute);
-    List<VisumMatrix> totalTrips = emptyList();
+    List<VisumMatrix> totalTrips = asList(new VisumMatrix(new FloatMatrix(emptyList())));
     HourlyTimeProfile timeProfile = mock(HourlyTimeProfile.class);
     ZoneRepository zoneRepository = mock(ZoneRepository.class);
     origin = mock(Zone.class);
