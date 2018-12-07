@@ -100,33 +100,34 @@ public class ExternalTrips {
     Time startTime = SimpleTime.ofHours(hour).plusMinutes(minute);
     int originId = zoneId(origin);
     int destinationId = zoneId(destination);
-    if (origin.opportunities().locationsAvailable(ActivityType.WORK)
-        && destination.opportunities().locationsAvailable(ActivityType.WORK)) {
-      Location originLocation = origin
-          .opportunities()
-          .selectRandomLocation(ActivityType.WORK, rnd_location.nextDouble());
-      Location destinationLocation = destination
-          .opportunities()
-          .selectRandomLocation(ActivityType.WORK, rnd_location.nextDouble());
+    if (hasOpportunities(origin) && hasOpportunities(destination)) {
+      Location originLocation = selectLocationIn(origin);
+      Location destinationLocation = selectLocationIn(destination);
       int from = originLocation.roadAccessEdgeId;
       int to = destinationLocation.roadAccessEdgeId;
       return new LocationToLocation(id_seq++, from, to, startTime);
     }
-    if (origin.opportunities().locationsAvailable(ActivityType.WORK)) {
-      Location location = origin
-          .opportunities()
-          .selectRandomLocation(ActivityType.WORK, rnd_location.nextDouble());
+    if (hasOpportunities(origin)) {
+      Location location = selectLocationIn(origin);
       int from = location.roadAccessEdgeId;
       return new FromLocation(id_seq++, from, destinationId, startTime);
     }
-    if (destination.opportunities().locationsAvailable(ActivityType.WORK)) {
-      Location location = destination
-          .opportunities()
-          .selectRandomLocation(ActivityType.WORK, rnd_location.nextDouble());
+    if (hasOpportunities(destination)) {
+      Location location = selectLocationIn(destination);
       int to = location.roadAccessEdgeId;
       return new ToLocation(id_seq++, originId, to, startTime);
     }
     return new ZoneToZone(id_seq++, originId, destinationId, startTime);
+  }
+
+  private Location selectLocationIn(Zone origin) {
+    return origin
+        .opportunities()
+        .selectRandomLocation(ActivityType.WORK, rnd_location.nextDouble());
+  }
+
+  private boolean hasOpportunities(Zone origin) {
+    return origin.opportunities().locationsAvailable(ActivityType.WORK);
   }
 
   private int zoneId(Zone origin) {
