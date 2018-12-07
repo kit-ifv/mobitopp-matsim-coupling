@@ -25,7 +25,9 @@ import org.matsim.api.core.v01.population.Population;
 import org.matsim.api.core.v01.population.PopulationFactory;
 import org.mockito.InOrder;
 
+import edu.kit.ifv.mobitopp.simulation.external.DefaultActivityCreator;
 import edu.kit.ifv.mobitopp.simulation.external.ExternalTrip;
+import edu.kit.ifv.mobitopp.simulation.external.ZoneToZone;
 import edu.kit.ifv.mobitopp.time.SimpleTime;
 import edu.kit.ifv.mobitopp.time.Time;
 
@@ -39,6 +41,7 @@ public class ExternalPersonCreatorTest {
 		int to = 2;
 		int hour = 3;
 		int minute = 4;
+    Time startTime = SimpleTime.ofHours(hour).plusMinutes(minute);
 		double sourceStart = Time.start.toSeconds();
 		Time sourceEndTime = SimpleTime
 				.ofHours(hour)
@@ -61,7 +64,8 @@ public class ExternalPersonCreatorTest {
 		Leg leg = configureLeg();
 		Activity destination = configureActivity(OUTFLOW, to);
 
-		ExternalTrip externalTrip = new ExternalTrip(from, to, hour, minute);
+		int tripId = 0;
+    ExternalTrip externalTrip = new ZoneToZone(tripId, from, to, startTime);
 		Collection<ExternalTrip> trips = asList(externalTrip);
 		ExternalPersonCreator creator = new ExternalPersonCreator(population);
 
@@ -87,7 +91,7 @@ public class ExternalPersonCreatorTest {
 	}
 
 	private Activity configureActivity(String outflow, int to) {
-		Id<Link> toLink = ExternalPersonCreator.createLinkId(outflow, to);
+		Id<Link> toLink = DefaultActivityCreator.createZoneLinkId(outflow, to);
 		Activity destination = mock(Activity.class);
 		when(factory.createActivityFromLinkId(outflow, toLink)).thenReturn(destination);
 		return destination;

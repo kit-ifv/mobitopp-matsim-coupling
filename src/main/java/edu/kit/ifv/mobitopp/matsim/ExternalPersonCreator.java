@@ -4,7 +4,6 @@ import java.util.Collection;
 
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.TransportMode;
-import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.population.Activity;
 import org.matsim.api.core.v01.population.Leg;
 import org.matsim.api.core.v01.population.Person;
@@ -14,7 +13,6 @@ import org.matsim.api.core.v01.population.PopulationFactory;
 
 import edu.kit.ifv.mobitopp.simulation.external.ExternalTrip;
 import edu.kit.ifv.mobitopp.time.RelativeTime;
-import edu.kit.ifv.mobitopp.time.Time;
 
 public class ExternalPersonCreator {
 
@@ -65,29 +63,11 @@ public class ExternalPersonCreator {
 	}
 
 	private Activity createDestination(ExternalTrip trip) {
-		int onLink = trip.to;
-		Activity destination = createActivityFor(OUTFLOW, onLink);
-		long startTime = trip.startTime().toSeconds();
-		destination.setStartTime(startTime);
-		return destination;
-	}
-
-	private Activity createActivityFor(String activityType, int link) {
-		Id<Link> linkId = createLinkId(activityType, link);
-		return populationFactory.createActivityFromLinkId(activityType, linkId);
-	}
-
-	static Id<Link> createLinkId(String activityType, int link) {
-		return Id.createLinkId("Z" + link + "-" + activityType);
+		return trip.createDestination(OUTFLOW, populationFactory);
 	}
 
 	private Activity createSource(ExternalTrip trip) {
-		int onLink = trip.from;
-		Activity source = createActivityFor(INFLOW, onLink);
-		source.setStartTime(Time.start.toSeconds());
-		long endTime = trip.startTime().minus(externalTripDuration).toSeconds();
-		source.setEndTime(endTime);
-		return source;
+		return trip.createSource(INFLOW, populationFactory);
 	}
 
 	public int personsCreated() {
