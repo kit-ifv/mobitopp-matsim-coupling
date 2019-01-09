@@ -24,19 +24,22 @@ public class MobitoppMatsimCoupling {
 	}
 
 	public void simulate() {
-	  int iteration = 0;
 		Mobitopp mobitopp = new Mobitopp(context);
 		Matsim matsim = PrepareMatsim.from(context);
-		MatrixPrinter matrixPrinter = MatrixPrinter.fromZones(context.zoneRepository().zones());
 		mobitopp.simulate();
 		matsim.createPersons();
 		matsim.createPlans();
 		Controler lastRun = matsim.simulate();
+		processTravelTimeMatrices(matsim, lastRun);
+	}
+
+  private void processTravelTimeMatrices(Matsim matsim, Controler lastRun) {
+    MatrixPrinter matrixPrinter = MatrixPrinter.fromZones(context.zoneRepository().zones());
 		TreeMap<Integer, TravelTimeMatrix> travelTimeMatrices = matsim.createTravelTimeMatrices(lastRun);
 		matsim.updateTravelTime(travelTimeMatrices);
 		MatrixWriter matrixWriter = new MatrixWriter(matrixPrinter);
-    matrixWriter.writeTravelTimeMatrices(travelTimeMatrices, iteration);
-	}
+    matrixWriter.writeTravelTimeMatrices(travelTimeMatrices);
+  }
 
   public static void main(String... args) throws IOException {
 		if (1 > args.length) {

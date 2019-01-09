@@ -30,16 +30,16 @@ public class MatrixWriter {
     }
   }
 
-  public void writeTravelTimeMatrices(TreeMap<Integer, TravelTimeMatrix> matrices, int iteration) {
+  public void writeTravelTimeMatrices(TreeMap<Integer, TravelTimeMatrix> matrices) {
     for (Integer hour : matrices.keySet()) {
       TravelTimeMatrix matrix = matrices.get(hour);
-      File file = matrixFileFor(iteration, hour);
+      File file = matrixFileFor(hour);
       System.out.println("Writing travel time matrix for " + hour);
       matrixPrinter.writeMatrixToFile(matrix, hour.toString(), hour.toString(), file);
     }
   }
 
-  private File matrixFileFor(int iteration, Integer hour) {
-    return new File(travelTimeMatrixDir, "TravelTime_" + "it" + iteration + "_" + hour + ".mtx");
+  private File matrixFileFor(int hour) {
+    return new File(travelTimeMatrixDir, "TravelTime_" + hour + ".mtx");
   }
 }
