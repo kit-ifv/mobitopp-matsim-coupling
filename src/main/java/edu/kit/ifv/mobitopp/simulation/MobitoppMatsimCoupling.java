@@ -4,10 +4,15 @@ import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.TreeMap;
 
+import org.matsim.core.controler.Controler;
+
+import edu.kit.ifv.mobitopp.data.TravelTimeMatrix;
 import edu.kit.ifv.mobitopp.matsim.MatsimContext;
 import edu.kit.ifv.mobitopp.matsim.MatsimContextBuilder;
 import edu.kit.ifv.mobitopp.matsim.PrepareMatsim;
+import edu.kit.ifv.mobitopp.util.dataexport.MatrixPrinter;
 
 public class MobitoppMatsimCoupling {
 
@@ -19,15 +24,21 @@ public class MobitoppMatsimCoupling {
 	}
 
 	public void simulate() {
+	  int iteration = 0;
 		Mobitopp mobitopp = new Mobitopp(context);
 		Matsim matsim = PrepareMatsim.from(context);
+		MatrixPrinter matrixPrinter = MatrixPrinter.fromZones(context.zoneRepository().zones());
 		mobitopp.simulate();
 		matsim.createPersons();
 		matsim.createPlans();
-		matsim.simulate();
+		Controler lastRun = matsim.simulate();
+		TreeMap<Integer, TravelTimeMatrix> travelTimeMatrices = matsim.createTravelTimeMatrices(lastRun);
+		matsim.updateTravelTime(travelTimeMatrices);
+		MatrixWriter matrixWriter = new MatrixWriter(matrixPrinter);
+    matrixWriter.writeTravelTimeMatrices(travelTimeMatrices, iteration);
 	}
 
-	public static void main(String... args) throws IOException {
+  public static void main(String... args) throws IOException {
 		if (1 > args.length) {
 			System.out.println("Usage: ... <configuration file>");
 			System.exit(-1);

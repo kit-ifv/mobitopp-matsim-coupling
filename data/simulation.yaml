@@ -21,3 +21,4 @@ experimental:
   matsimConfig: data/matsim-config.xml
   externalTrafficW: data/matrices/external/102_pkw_w.mtx
   externalTrafficEx: data/matrices/external/104_pkw_ex.mtx
+  travelTimeMatrixFolderName: travelTime
