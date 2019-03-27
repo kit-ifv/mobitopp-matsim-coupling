@@ -57,13 +57,16 @@ public class MatsimHourMatrixCalculator {
     TravelTimeMatrix ttMatrix = new TravelTimeMatrix(new ArrayList<>(idsToOids.values()),
         Float.POSITIVE_INFINITY);
     for (Entry<Integer, Node> from : graph.zones().entrySet()) {
+      Integer fromId = from.getKey();
       Node zone = from.getValue();
       Map<Node, Path> paths = dijkstra()
           .shortestPathToAllZones(graph, ttfunction, zone, timeOfDayInSec);
       for (Node n : paths.keySet()) {
         Path p = paths.get(n);
-        Integer to = Integer.valueOf(n.id().substring(1));
-        ttMatrix.set(idsToOids.get(from.getKey()), idsToOids.get(to), p.travelTime() / 60.0f);
+        Integer toId = Integer.valueOf(n.id().substring(1));
+        if (fromId != toId) {
+          ttMatrix.set(idsToOids.get(fromId), idsToOids.get(toId), p.travelTime() / 60.0f);
+        }
       }
     }
     return ttMatrix;
