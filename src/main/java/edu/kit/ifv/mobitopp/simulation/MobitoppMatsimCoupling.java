@@ -4,44 +4,47 @@ import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.TreeMap;
+import java.util.Optional;
 
-import org.matsim.core.controler.Controler;
-
-import edu.kit.ifv.mobitopp.data.TravelTimeMatrix;
+import edu.kit.ifv.mobitopp.data.local.configuration.DynamicParameters;
+import edu.kit.ifv.mobitopp.data.local.configuration.ParserBuilder;
+import edu.kit.ifv.mobitopp.data.local.configuration.SimulationParser;
 import edu.kit.ifv.mobitopp.matsim.MatsimContext;
 import edu.kit.ifv.mobitopp.matsim.MatsimContextBuilder;
-import edu.kit.ifv.mobitopp.matsim.PrepareMatsim;
-import edu.kit.ifv.mobitopp.util.dataexport.MatrixPrinter;
 
 public class MobitoppMatsimCoupling {
 
-	private MatsimContext context;
+	private final WrittenConfiguration configuration;
 
-	public MobitoppMatsimCoupling(MatsimContext context) {
+	public MobitoppMatsimCoupling(WrittenConfiguration configuration) {
 		super();
-		this.context = context;
+		this.configuration = configuration;
 	}
 
-	public void simulate() {
-		Mobitopp mobitopp = new Mobitopp(context);
-		Matsim matsim = PrepareMatsim.from(context);
-		mobitopp.simulate();
-		matsim.createPersons();
-		matsim.createPlans();
-		Controler lastRun = matsim.simulate();
-		processTravelTimeMatrices(matsim, lastRun);
+	public void simulate() throws IOException {
+		Optional<ImpedanceIfc> impedance = Optional.empty();
+		for (int current = 0; current < iterations(); current++) {
+			MatsimContext context = loadContext(impedance, current);
+			impedance = new MobitoppMatsimIteration(context).simulate();
+		}
 	}
 
-  private void processTravelTimeMatrices(Matsim matsim, Controler lastRun) {
-    MatrixPrinter matrixPrinter = MatrixPrinter.fromZones(context.zoneRepository().zones());
-		TreeMap<Integer, TravelTimeMatrix> travelTimeMatrices = matsim.createTravelTimeMatrices(lastRun);
-		matsim.updateTravelTime(travelTimeMatrices);
-		MatrixWriter matrixWriter = new MatrixWriter(matrixPrinter);
-    matrixWriter.writeTravelTimeMatrices(travelTimeMatrices);
-  }
+	private MatsimContext loadContext(Optional<ImpedanceIfc> impedance, int current)
+			throws IOException {
+		WrittenConfiguration derived = new WrittenConfiguration(configuration);
+		String resultFolder = derived.getResultFolder();
+		resultFolder += "-" + current;
+		derived.setResultFolder(resultFolder);
+		MatsimContext context = new MatsimContextBuilder().buildFrom(derived);
+		impedance.ifPresent(i -> context.updateImpedance(i));
+		return context;
+	}
 
-  public static void main(String... args) throws IOException {
+	private int iterations() {
+		return new DynamicParameters(configuration.getExperimental()).valueAsInteger("iterations");
+	}
+
+	public static void main(String... args) throws IOException {
 		if (1 > args.length) {
 			System.out.println("Usage: ... <configuration file>");
 			System.exit(-1);
@@ -56,8 +59,10 @@ public class MobitoppMatsimCoupling {
 	}
 
 	private static void startSimulation(File configurationFile) throws IOException {
-		MatsimContext context = new MatsimContextBuilder().buildFrom(configurationFile);
-		new MobitoppMatsimCoupling(context).simulate();
+		ParserBuilder parser = new ParserBuilder();
+		SimulationParser format = parser.forSimulation();
+		WrittenConfiguration configuration = format.parse(configurationFile);
+		new MobitoppMatsimCoupling(configuration).simulate();
 	}
 
 }

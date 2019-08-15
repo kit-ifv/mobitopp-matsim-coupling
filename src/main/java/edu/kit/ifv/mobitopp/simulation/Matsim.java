@@ -2,7 +2,6 @@ package edu.kit.ifv.mobitopp.simulation;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,13 +14,11 @@ import org.matsim.core.controler.Controler;
 
 import edu.kit.ifv.mobitopp.data.TravelTimeMatrix;
 import edu.kit.ifv.mobitopp.data.Zone;
-import edu.kit.ifv.mobitopp.data.local.InMemoryMatrices;
 import edu.kit.ifv.mobitopp.matsim.ActivityFilter;
 import edu.kit.ifv.mobitopp.matsim.ExternalDemandCreator;
 import edu.kit.ifv.mobitopp.matsim.MatsimContext;
 import edu.kit.ifv.mobitopp.matsim.MatsimPersonCreator;
 import edu.kit.ifv.mobitopp.matsim.MatsimPlanCreator;
-import edu.kit.ifv.mobitopp.time.DayOfWeek;
 
 public class Matsim {
 
@@ -86,23 +83,9 @@ public class Matsim {
     return controler;
   }
 
-  public void updateTravelTime(TreeMap<Integer, TravelTimeMatrix> travelTimeMatrices) {
-    InMemoryMatrices carMatrices = createMatrices(travelTimeMatrices);
-    ImpedanceIfc newImpedance = new ImpedanceMatSimIteration(context.impedance(), carMatrices);
-    context.updateImpedance(newImpedance);
-  }
-
-  private InMemoryMatrices createMatrices(TreeMap<Integer, TravelTimeMatrix> travelTimeMatrices) {
-    Map<DayOfWeek, TreeMap<Integer, TravelTimeMatrix>> dayMatrices = new HashMap<>();
-    for (DayOfWeek day : DayOfWeek.values()) {
-      dayMatrices.put(day, travelTimeMatrices);
-    }
-    return new InMemoryMatrices(dayMatrices);
-  }
-
   public TreeMap<Integer, TravelTimeMatrix> createTravelTimeMatrices(
       Controler controler) {
-    MatsimMatrixGenerator generate = new MatsimMatrixGenerator(network, context.network(),
+    MatsimMatrixGenerator generate = new MatsimMatrixGenerator(network, context.getRoadNetwork(),
         idToOidMapping());
     return generate.travelTimeMatrices(controler);
   }
@@ -111,7 +94,7 @@ public class Matsim {
     Map<Integer, Zone> zones = context.zoneRepository().zones();
     Map<Integer, Integer> id2OidMapping = new LinkedHashMap<Integer, Integer>();
     for (Zone zone : zones.values()) {
-      Integer id = Integer.valueOf(zone.getId().substring(1));
+      Integer id = Integer.valueOf(zone.getId().replaceFirst("Z", ""));
       id2OidMapping.put(id, zone.getOid());
     }
     return id2OidMapping;

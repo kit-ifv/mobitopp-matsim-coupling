@@ -27,28 +27,32 @@ public class MatsimModeConverter {
 		if (isPublicTransport(transport)) {
 			result.add("pt");
 		}
-		if (transport.contains(visum.getTransportSystem("Rad"))) {
+		if (containsTransportSystem(transport, "Rad")) {
 			result.add("bike");
 		}
-		if (transport.contains(visum.getTransportSystem("Fuss"))) {
+		if (containsTransportSystem(transport, "Fuss")) {
 			result.add("walk");
 		}
-		if (transport.contains(visum.getTransportSystem("F"))) {
+		if (containsTransportSystem(transport, "F")) {
 			result.add("transit_walk");
 		}
 		return result;
 	}
 
 	public boolean isCar(Set<VisumTransportSystem> transport) {
-		return transport.contains(visum.getTransportSystem("P"))
-				||	transport.contains(visum.getTransportSystem("Lkw") );
+		return containsTransportSystem(transport, "P")
+				||	containsTransportSystem(transport, "Lkw");
 	}
 
 	private boolean isPublicTransport(Set<VisumTransportSystem> transport) {
-		return transport.contains(visum.getTransportSystem("I"))
-				|| transport.contains(visum.getTransportSystem("NVBW"))
-				|| transport.contains(visum.getTransportSystem("R"))
-				|| transport.contains(visum.getTransportSystem("S"))
-				|| transport.contains(visum.getTransportSystem("U"));
+		return containsTransportSystem(transport, "I")
+				|| containsTransportSystem(transport, "NVBW")
+				|| containsTransportSystem(transport, "R")
+				|| containsTransportSystem(transport, "S")
+				|| containsTransportSystem(transport, "U");
+	}
+
+	private boolean containsTransportSystem(Set<VisumTransportSystem> transport, String code) {
+		return visum.containsTransportSystem(code) && transport.contains(visum.getTransportSystem(code));
 	}
 }

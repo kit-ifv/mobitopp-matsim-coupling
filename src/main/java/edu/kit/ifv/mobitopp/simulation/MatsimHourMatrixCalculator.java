@@ -63,7 +63,7 @@ public class MatsimHourMatrixCalculator {
           .shortestPathToAllZones(graph, ttfunction, zone, timeOfDayInSec);
       for (Node n : paths.keySet()) {
         Path p = paths.get(n);
-        Integer toId = Integer.valueOf(n.id().substring(1));
+        Integer toId = Integer.valueOf(n.id().replaceFirst("Z", ""));
         if (fromId != toId) {
           ttMatrix.set(idsToOids.get(fromId), idsToOids.get(toId), p.travelTime() / 60.0f);
         }

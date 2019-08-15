@@ -14,6 +14,7 @@ import org.matsim.core.config.Config;
 import edu.kit.ifv.mobitopp.data.Network;
 import edu.kit.ifv.mobitopp.simulation.SimulationContext;
 import edu.kit.ifv.mobitopp.simulation.WrittenConfiguration;
+import edu.kit.ifv.mobitopp.visum.VisumRoadNetwork;
 
 public class PrepareMatsimTest {
 
@@ -33,11 +34,12 @@ public class PrepareMatsimTest {
 
 	private MatsimContext createContext() {
 		Network network = mock(Network.class);
+		VisumRoadNetwork roadNetwork = mock(VisumRoadNetwork.class);
 		SimulationContext context = mock(SimulationContext.class);
 		WrittenConfiguration configuration = new WrittenConfiguration();
 		configuration.setResultFolder(baseFolder);
 		when(context.configuration()).thenReturn(configuration);
-		return new MatsimContext(context, network);
+		return new MatsimContext(context, network, roadNetwork);
 	}
 
 	private Config createMatsimConfig() {

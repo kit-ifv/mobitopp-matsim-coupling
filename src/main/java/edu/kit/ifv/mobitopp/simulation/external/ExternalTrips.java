@@ -152,7 +152,7 @@ public class ExternalTrips {
   }
 
   private int zoneId(Zone origin) {
-    return Integer.parseInt(origin.getId().substring(1));
+    return Integer.parseInt(origin.getId().replaceFirst("Z", ""));
   }
 
 }
