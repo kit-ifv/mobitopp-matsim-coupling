@@ -4,7 +4,7 @@ import edu.kit.ifv.mobitopp.data.DataRepositoryForSimulation;
 import edu.kit.ifv.mobitopp.data.PersonLoader;
 import edu.kit.ifv.mobitopp.data.ZoneRepository;
 import edu.kit.ifv.mobitopp.data.local.configuration.DynamicParameters;
-import edu.kit.ifv.mobitopp.result.ResultWriter;
+import edu.kit.ifv.mobitopp.result.Results;
 import edu.kit.ifv.mobitopp.simulation.ImpedanceIfc;
 import edu.kit.ifv.mobitopp.simulation.PersonResults;
 import edu.kit.ifv.mobitopp.simulation.SimulationContext;
@@ -77,7 +77,7 @@ public class SimulationContextDecorator implements SimulationContext {
 	}
 
 	@Override
-	public ResultWriter results() {
+	public Results results() {
 		return baseContext.results();
 	}
 
@@ -94,6 +94,11 @@ public class SimulationContextDecorator implements SimulationContext {
 	@Override
 	public void afterSimulation() {
 		baseContext.afterSimulation();
+	}
+
+	@Override
+	public DynamicParameters destinationChoiceParameters() {
+		return baseContext.destinationChoiceParameters();
 	}
 
 }

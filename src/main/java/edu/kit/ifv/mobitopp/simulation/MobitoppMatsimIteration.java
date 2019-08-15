@@ -34,7 +34,7 @@ public class MobitoppMatsimIteration {
 	}
 
 	private ImpedanceIfc finishIteration(Matsim matsim, Controler lastRun, MatsimContext context) {
-		MatrixPrinter matrixPrinter = MatrixPrinter.fromZones(context.zoneRepository().zones());
+		MatrixPrinter matrixPrinter = new MatrixPrinter();
 		TreeMap<Integer, TravelTimeMatrix> travelTimeMatrices = matsim
 				.createTravelTimeMatrices(lastRun);
 		MatrixWriter matrixWriter = new MatrixWriter(matrixPrinter);

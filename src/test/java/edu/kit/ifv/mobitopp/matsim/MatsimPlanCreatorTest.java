@@ -24,6 +24,7 @@ import org.matsim.api.core.v01.population.Plan;
 import org.matsim.api.core.v01.population.PopulationFactory;
 
 import edu.kit.ifv.mobitopp.data.Zone;
+import edu.kit.ifv.mobitopp.data.ZoneId;
 import edu.kit.ifv.mobitopp.simulation.ActivityType;
 import edu.kit.ifv.mobitopp.simulation.Location;
 import edu.kit.ifv.mobitopp.simulation.Mode;
@@ -34,8 +35,8 @@ import edu.kit.ifv.mobitopp.time.Time;
 public class MatsimPlanCreatorTest {
 
 	private static final int personId = 1;
-	private static final String workZoneId = "Z1";
-	private static final String homeZoneId = "Z2";
+	private static final ZoneId workZoneId = new ZoneId("1", 0);
+	private static final ZoneId homeZoneId = new ZoneId("2", 1);
 
 	private Location workLocation;
 	private Location homeLocation;
@@ -143,7 +144,7 @@ public class MatsimPlanCreatorTest {
 		Activity matsimWork = createMatsimActivity(workType, workZoneId);
 
 		ActivityType homeType = ActivityType.HOME;
-		String zoneId = homeZoneId;
+		ZoneId zoneId = homeZoneId;
 		Time homeStart = workActivity.calculatePlannedEndDate().plusHours(1);
 		ActivityIfc homeActivity = createActivity(homeType, zoneId, homeLocation, homeStart);
 		when(schedule.hasNextActivity(workActivity)).thenReturn(true);
@@ -153,15 +154,15 @@ public class MatsimPlanCreatorTest {
 		return asList(matsimWork, matsimHome);
 	}
 
-	private Activity createMatsimActivity(ActivityType type, String zoneId) {
-		Id<Link> linkId = Id.createLinkId(zoneId + ":12");
+	private Activity createMatsimActivity(ActivityType type, ZoneId zoneId) {
+		Id<Link> linkId = Id.createLinkId(zoneId.getExternalId() + ":12");
 		Activity matsimHome = mock(Activity.class);
 		when(factory.createActivityFromLinkId(type.getTypeAsString(), linkId)).thenReturn(matsimHome);
 		return matsimHome;
 	}
 
 	private ActivityIfc createActivity(
-			ActivityType type, String zoneId, Location location, Time start) {
+			ActivityType type, ZoneId zoneId, Location location, Time start) {
 		Time end = start.plusHours(1);
 		Zone zone = mock(Zone.class);
 		ActivityIfc activity = mock(ActivityIfc.class);

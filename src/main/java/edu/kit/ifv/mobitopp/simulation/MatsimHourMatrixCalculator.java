@@ -9,6 +9,7 @@ import org.matsim.core.controler.Controler;
 import org.matsim.core.router.util.TravelTime;
 
 import edu.kit.ifv.mobitopp.data.TravelTimeMatrix;
+import edu.kit.ifv.mobitopp.data.ZoneId;
 import edu.kit.ifv.mobitopp.routing.MatsimGraph;
 import edu.kit.ifv.mobitopp.routing.MatsimVisumTravelTime;
 import edu.kit.ifv.mobitopp.routing.Node;
@@ -22,11 +23,11 @@ public class MatsimHourMatrixCalculator {
 
   private final Network network;
   private final VisumRoadNetwork visumNetwork;
-  private final Map<Integer, Integer> idsToOids;
+  private final Map<Integer, ZoneId> idsToOids;
   private final Controler controler;
 
   public MatsimHourMatrixCalculator(
-      Network network, VisumRoadNetwork visumNetwork, Map<Integer, Integer> idsToOids,
+      Network network, VisumRoadNetwork visumNetwork, Map<Integer, ZoneId> idsToOids,
       Controler controler) {
     super();
     this.network = network;

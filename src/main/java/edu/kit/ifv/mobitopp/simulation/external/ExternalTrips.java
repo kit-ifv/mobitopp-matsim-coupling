@@ -76,7 +76,7 @@ public class ExternalTrips {
   protected int calculateNumberOfTrips(
       Zone origin, Zone destination, VisumMatrix tripProbabilityMatrix, float fraction) {
 
-    float probability = tripProbabilityMatrix.get(origin, destination) * fraction;
+    float probability = tripProbabilityMatrix.get(origin.getId(), destination.getId()) * fraction;
 
     if (probability < 0) {
       return 0;
@@ -152,7 +152,7 @@ public class ExternalTrips {
   }
 
   private int zoneId(Zone origin) {
-    return Integer.parseInt(origin.getId().replaceFirst("Z", ""));
+    return Integer.parseInt(origin.getId().getExternalId().replaceFirst("Z", ""));
   }
 
 }

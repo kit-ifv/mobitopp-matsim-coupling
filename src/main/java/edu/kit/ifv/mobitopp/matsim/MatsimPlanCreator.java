@@ -113,7 +113,7 @@ public class MatsimPlanCreator {
 	}
 
 	private boolean isExternal(Zone zone) {
-		String id = zone.getId().replaceFirst(Zone.IDPREFIX, "");
+		String id = zone.getId().getExternalId().replaceFirst(Zone.IDPREFIX, "");
 		int idAsInt = Integer.parseInt(id);
 		return 700000 < idAsInt;
 	}
@@ -151,7 +151,7 @@ public class MatsimPlanCreator {
 	}
 
 	private Id<Link> zoneLink(ActivityIfc mobitopp) {
-		String zoneId = mobitopp.zone().getId();
+		String zoneId = mobitopp.zone().getId().getExternalId();
 		return Id.createLinkId("" + zoneId + ":12");
 	}
 

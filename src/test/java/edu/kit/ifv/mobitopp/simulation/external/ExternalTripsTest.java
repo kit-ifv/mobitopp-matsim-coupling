@@ -23,6 +23,7 @@ import org.matsim.api.core.v01.network.Network;
 
 import edu.kit.ifv.mobitopp.data.FloatMatrix;
 import edu.kit.ifv.mobitopp.data.Zone;
+import edu.kit.ifv.mobitopp.data.ZoneId;
 import edu.kit.ifv.mobitopp.data.ZoneRepository;
 import edu.kit.ifv.mobitopp.simulation.ActivityType;
 import edu.kit.ifv.mobitopp.simulation.Location;
@@ -56,8 +57,8 @@ public class ExternalTripsTest {
     ZoneRepository zoneRepository = mock(ZoneRepository.class);
     origin = mock(Zone.class);
     destination = mock(Zone.class);
-    when(origin.getId()).thenReturn("Z" + originId);
-    when(destination.getId()).thenReturn("Z" + destinationId);
+    when(origin.getId()).thenReturn(new ZoneId("" + originId, originId));
+    when(destination.getId()).thenReturn(new ZoneId("" + destinationId, destinationId));
     originOpportunities = mock(OpportunityDataForZone.class);
     destinationOpportunities = mock(OpportunityDataForZone.class);
     when(origin.opportunities()).thenReturn(originOpportunities);

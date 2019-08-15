@@ -14,6 +14,7 @@ import org.matsim.core.controler.Controler;
 
 import edu.kit.ifv.mobitopp.data.TravelTimeMatrix;
 import edu.kit.ifv.mobitopp.data.Zone;
+import edu.kit.ifv.mobitopp.data.ZoneId;
 import edu.kit.ifv.mobitopp.matsim.ActivityFilter;
 import edu.kit.ifv.mobitopp.matsim.ExternalDemandCreator;
 import edu.kit.ifv.mobitopp.matsim.MatsimContext;
@@ -90,12 +91,12 @@ public class Matsim {
     return generate.travelTimeMatrices(controler);
   }
 
-  private Map<Integer, Integer> idToOidMapping() {
-    Map<Integer, Zone> zones = context.zoneRepository().zones();
-    Map<Integer, Integer> id2OidMapping = new LinkedHashMap<Integer, Integer>();
+  private Map<Integer, ZoneId> idToOidMapping() {
+    Map<ZoneId, Zone> zones = context.zoneRepository().zones();
+    Map<Integer, ZoneId> id2OidMapping = new LinkedHashMap<>();
     for (Zone zone : zones.values()) {
-      Integer id = Integer.valueOf(zone.getId().replaceFirst("Z", ""));
-      id2OidMapping.put(id, zone.getOid());
+      Integer id = Integer.valueOf(zone.getId().getExternalId().replaceFirst("Z", ""));
+      id2OidMapping.put(id, zone.getId());
     }
     return id2OidMapping;
   }

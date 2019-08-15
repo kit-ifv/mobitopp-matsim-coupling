@@ -9,10 +9,8 @@ import java.util.EnumSet;
 import org.junit.Before;
 import org.junit.Test;
 
+import edu.kit.ifv.mobitopp.data.ZoneId;
 import edu.kit.ifv.mobitopp.data.local.InMemoryMatrices;
-import edu.kit.ifv.mobitopp.simulation.ImpedanceIfc;
-import edu.kit.ifv.mobitopp.simulation.ImpedanceMatSimIteration;
-import edu.kit.ifv.mobitopp.simulation.Mode;
 import edu.kit.ifv.mobitopp.time.SimpleTime;
 import edu.kit.ifv.mobitopp.time.Time;
 
@@ -21,8 +19,8 @@ public class ImpedanceMatSimIterationTest {
 	private ImpedanceIfc impedance;
 	private InMemoryMatrices travelTime;
 	private ImpedanceMatSimIteration matsim;
-	private int origin;
-	private int destination;
+	private ZoneId origin;
+	private ZoneId destination;
 	private Time date;
 	private EnumSet<Mode> carModes;
 	private EnumSet<Mode> nonCarModes;
@@ -35,8 +33,8 @@ public class ImpedanceMatSimIterationTest {
 		carModes = EnumSet.of(Mode.CAR, Mode.CARSHARING_FREE, Mode.CARSHARING_STATION, Mode.PASSENGER);
 		nonCarModes = EnumSet.complementOf(carModes);
 
-		origin = 0;
-		destination = 0;
+		origin = new ZoneId("0", 0);
+		destination = new ZoneId("0", 0);
 		date = new SimpleTime();
 	}
 
@@ -45,7 +43,7 @@ public class ImpedanceMatSimIterationTest {
 		for (Mode mode : carModes) {
 			usesInMemoryMatricesFor(mode);
 		}
-		verify(travelTime, times(carModes.size())).getTravelTime(origin, destination, date);
+		verify(travelTime, times(carModes.size())).getTravelTime(origin.getMatrixColumn(), destination.getMatrixColumn(), date);
 	}
 
 	private void usesInMemoryMatricesFor(Mode mode) {

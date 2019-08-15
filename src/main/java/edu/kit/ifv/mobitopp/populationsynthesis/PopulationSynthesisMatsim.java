@@ -5,8 +5,10 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Map;
 
+import edu.kit.ifv.mobitopp.data.PanelDataRepository;
 import edu.kit.ifv.mobitopp.populationsynthesis.carownership.CarOwnershipModel;
 import edu.kit.ifv.mobitopp.populationsynthesis.carownership.CarSegmentModel;
+import edu.kit.ifv.mobitopp.populationsynthesis.carownership.CarSharingCustomerModel;
 import edu.kit.ifv.mobitopp.populationsynthesis.carownership.ElectricCarOwnershipBasedOnSociodemographic;
 import edu.kit.ifv.mobitopp.populationsynthesis.carownership.GenericElectricCarOwnershipModel;
 import edu.kit.ifv.mobitopp.populationsynthesis.carownership.LogitBasedCarSegmentModel;
@@ -19,7 +21,6 @@ import edu.kit.ifv.mobitopp.populationsynthesis.opportunities.OpportunityLocatio
 import edu.kit.ifv.mobitopp.populationsynthesis.opportunities.RoadBasedOpportunitySelector;
 import edu.kit.ifv.mobitopp.simulation.IdSequence;
 import edu.kit.ifv.mobitopp.simulation.ImpedanceIfc;
-import edu.kit.ifv.mobitopp.simulation.carsharing.CarSharingCustomerModel;
 import edu.kit.ifv.mobitopp.simulation.emobility.EmobilityPersonCreator;
 
 public class PopulationSynthesisMatsim extends BasicPopulationSynthesis {
@@ -30,10 +31,10 @@ public class PopulationSynthesisMatsim extends BasicPopulationSynthesis {
 	public PopulationSynthesisMatsim(
 			CarOwnershipModel carOwnershipModel, HouseholdLocationSelector householdLocationSelector,
 			ChargePrivatelySelector chargePrivatelySelector, PersonCreator personCreator,
-			SynthesisContext context) {
+			SynthesisContext context, ActivityScheduleAssigner activityScheduleAssigner) {
 
 		super(carOwnershipModel, householdLocationSelector, chargePrivatelySelector, personCreator,
-				context);
+				activityScheduleAssigner, context);
 	}
 	
 	@Override
@@ -74,19 +75,20 @@ public class PopulationSynthesisMatsim extends BasicPopulationSynthesis {
 		HouseholdLocationSelector householdLocationSelector = householdLocations(context);
 		CommutationTicketModelIfc commuterTicketModel = commuterTickets(context);
 		CarOwnershipModel carOwnershipModel = carOwnership(context);
-		ActivityScheduleCreator activityScheduleCreator = context.activityScheduleCreator();
 		ChargePrivatelySelector chargePrivatelySelector = chargePrivately(context);
-		PersonCreator personCreator = personCreator(context, commuterTicketModel,
-				activityScheduleCreator);
+		PersonCreator personCreator = personCreator(context, commuterTicketModel);
+		ActivityScheduleCreator scheduleCreator = new DefaultActivityScheduleCreator();
+    PanelDataRepository panelDataRepository = context.dataRepository().panelDataRepository();
+    ActivityScheduleAssigner activityScheduleAssigner = new DefaultActivityAssigner(
+        panelDataRepository, scheduleCreator);;
 		return populationSynthesis(householdLocationSelector, carOwnershipModel,
-				chargePrivatelySelector, personCreator, context);
+				chargePrivatelySelector, personCreator, context, activityScheduleAssigner);
 	}
 
 	private static EmobilityPersonCreator personCreator(
-			SynthesisContext configuration, CommutationTicketModelIfc commuterTicketModel,
-			ActivityScheduleCreator activityScheduleCreator) {
+			SynthesisContext configuration, CommutationTicketModelIfc commuterTicketModel) {
 		Map<String, CarSharingCustomerModel> carSharing = configuration.carSharing();
-		return new EmobilityPersonCreator(activityScheduleCreator, commuterTicketModel, carSharing,
+		return new EmobilityPersonCreator(commuterTicketModel, carSharing,
 				configuration.seed());
 	}
 
@@ -116,9 +118,9 @@ public class PopulationSynthesisMatsim extends BasicPopulationSynthesis {
 	private static PopulationSynthesisMatsim populationSynthesis(
 			HouseholdLocationSelector householdLocationSelector, CarOwnershipModel carOwnershipModel,
 			ChargePrivatelySelector chargePrivatelySelector, PersonCreator personCreator,
-			SynthesisContext context) {
+			SynthesisContext context, ActivityScheduleAssigner activityScheduleAssigner) {
 		return new PopulationSynthesisMatsim(carOwnershipModel, householdLocationSelector,
-				chargePrivatelySelector, personCreator, context);
+				chargePrivatelySelector, personCreator, context, activityScheduleAssigner);
 	}
 
 }

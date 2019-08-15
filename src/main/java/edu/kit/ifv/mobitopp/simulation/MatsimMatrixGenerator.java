@@ -11,16 +11,17 @@ import org.matsim.api.core.v01.network.Network;
 import org.matsim.core.controler.Controler;
 
 import edu.kit.ifv.mobitopp.data.TravelTimeMatrix;
+import edu.kit.ifv.mobitopp.data.ZoneId;
 import edu.kit.ifv.mobitopp.visum.VisumRoadNetwork;
 
 public class MatsimMatrixGenerator {
 
   private final Network network;
   private final VisumRoadNetwork visumNetwork;
-  private final Map<Integer, Integer> idsToOids;
+  private final Map<Integer, ZoneId> idsToOids;
 
   public MatsimMatrixGenerator(
-      Network network, VisumRoadNetwork visumNetwork, Map<Integer, Integer> idsToOids) {
+      Network network, VisumRoadNetwork visumNetwork, Map<Integer, ZoneId> idsToOids) {
     super();
     this.network = network;
     this.visumNetwork = visumNetwork;

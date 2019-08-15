@@ -14,7 +14,9 @@ import edu.kit.ifv.mobitopp.simulation.modeChoice.ModeChoiceModel;
 import edu.kit.ifv.mobitopp.simulation.modeChoice.stuttgart.ModeChoiceStuttgart;
 import edu.kit.ifv.mobitopp.simulation.modeChoice.stuttgart.ModeSelectorParameterFirstTrip;
 import edu.kit.ifv.mobitopp.simulation.modeChoice.stuttgart.ModeSelectorParameterOtherTrip;
+import edu.kit.ifv.mobitopp.simulation.person.DefaultTripFactory;
 import edu.kit.ifv.mobitopp.simulation.person.PersonStateSimple;
+import edu.kit.ifv.mobitopp.simulation.person.TripFactory;
 import edu.kit.ifv.mobitopp.simulation.tour.TourBasedModeChoiceModelDummy;
 
 public class Mobitopp extends Simulation {
@@ -32,9 +34,10 @@ public class Mobitopp extends Simulation {
 		ZoneBasedRouteChoice routeChoice = new NoRouteChoice();
 		ReschedulingStrategy rescheduling = new ReschedulingSkipTillHome(context().simulationDays());
 		System.out.println("Initializing simulator...");
+		TripFactory tripFactory = new DefaultTripFactory();
 		return new DemandSimulatorPassenger(destinationSelector,
 				new TourBasedModeChoiceModelDummy(modeSelector), routeChoice,
-				new DefaultActivityDurationRandomizer(context().seed()), rescheduling,
+				new DefaultActivityDurationRandomizer(context().seed()), tripFactory, rescheduling,
 				PersonStateSimple.UNINITIALIZED, context());
 	}
 
