@@ -155,7 +155,7 @@ public class MatsimPlanCreatorTest {
 	}
 
 	private Activity createMatsimActivity(ActivityType type, ZoneId zoneId) {
-		Id<Link> linkId = Id.createLinkId(zoneId.getExternalId() + ":12");
+		Id<Link> linkId = Id.createLinkId("Z" + zoneId.getExternalId() + ":12");
 		Activity matsimHome = mock(Activity.class);
 		when(factory.createActivityFromLinkId(type.getTypeAsString(), linkId)).thenReturn(matsimHome);
 		return matsimHome;
