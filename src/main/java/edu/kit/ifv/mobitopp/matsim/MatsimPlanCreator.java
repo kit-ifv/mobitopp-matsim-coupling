@@ -152,7 +152,7 @@ public class MatsimPlanCreator {
 
 	private Id<Link> zoneLink(ActivityIfc mobitopp) {
 		String zoneId = mobitopp.zone().getId().getExternalId();
-		return Id.createLinkId("" + zoneId + ":12");
+		return Id.createLinkId("Z" + zoneId + ":12");
 	}
 
 	private Leg createLeg(edu.kit.ifv.mobitopp.simulation.activityschedule.ActivityIfc mobitopp) {
