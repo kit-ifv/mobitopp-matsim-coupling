@@ -57,11 +57,3 @@ tasks.withType(JavaExec) {
     maxHeapSize = "25G"
     jvmArgs '-Xss512M'
  }
-
-uploadArchives {
-    repositories {
-        mavenDeployer {
-           repository(url: project.ext["mobitopp.repository.url"])
-        }
-    }
-}
