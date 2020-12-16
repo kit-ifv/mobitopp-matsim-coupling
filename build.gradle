@@ -7,6 +7,9 @@ group = 'edu.kit.ifv.mobitopp'
 version = 0.1
 wrapper.gradleVersion = '6.3'
 
+sourceCompatibility = 1.12
+targetCompatibility = 1.12
+
 repositories {
     jcenter()
     mavenCentral()
