@@ -10,8 +10,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.matsim.api.core.v01.population.Activity;
 
-import nl.jqno.equalsverifier.EqualsVerifier;
-
 public class ZoneToZoneTest {
 
   private ExternalTrip trip;
@@ -43,8 +41,4 @@ public class ZoneToZoneTest {
     verifyNoMoreInteractions(testData.activityCreator);
   }
   
-  @Test
-  public void equalsAndHashCode() {
-    EqualsVerifier.forClass(ZoneToZone.class).usingGetClass().verify();
-  }
 }

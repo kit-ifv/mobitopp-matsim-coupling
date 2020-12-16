@@ -18,6 +18,7 @@ import edu.kit.ifv.mobitopp.matsim.converter.ActivityTypeConverter;
 import edu.kit.ifv.mobitopp.matsim.converter.ModeConverter;
 import edu.kit.ifv.mobitopp.simulation.ActivityType;
 import edu.kit.ifv.mobitopp.simulation.Mode;
+import edu.kit.ifv.mobitopp.simulation.StandardMode;
 import edu.kit.ifv.mobitopp.simulation.activityschedule.ActivityIfc;
 import edu.kit.ifv.mobitopp.simulation.activityschedule.ActivitySchedule;
 
@@ -113,7 +114,7 @@ public class MatsimPlanCreator {
 	}
 
 	private boolean isExternal(Zone zone) {
-		String id = zone.getId().getExternalId().replaceFirst(Zone.IDPREFIX, "");
+		String id = zone.getId().getExternalId();
 		int idAsInt = Integer.parseInt(id);
 		return 700000 < idAsInt;
 	}
@@ -156,7 +157,7 @@ public class MatsimPlanCreator {
 	}
 
 	private Leg createLeg(edu.kit.ifv.mobitopp.simulation.activityschedule.ActivityIfc mobitopp) {
-		Mode mode = mobitopp.isModeSet() ? mobitopp.mode() : Mode.PEDESTRIAN;
+		Mode mode = mobitopp.isModeSet() ? mobitopp.mode() : StandardMode.PEDESTRIAN;
 		return populationFactory.createLeg(asMatsimMode(mode));
 	}
 

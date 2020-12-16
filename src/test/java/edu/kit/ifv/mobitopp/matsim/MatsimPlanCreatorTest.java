@@ -27,7 +27,7 @@ import edu.kit.ifv.mobitopp.data.Zone;
 import edu.kit.ifv.mobitopp.data.ZoneId;
 import edu.kit.ifv.mobitopp.simulation.ActivityType;
 import edu.kit.ifv.mobitopp.simulation.Location;
-import edu.kit.ifv.mobitopp.simulation.Mode;
+import edu.kit.ifv.mobitopp.simulation.StandardMode;
 import edu.kit.ifv.mobitopp.simulation.activityschedule.ActivityIfc;
 import edu.kit.ifv.mobitopp.simulation.activityschedule.ActivityScheduleWithState;
 import edu.kit.ifv.mobitopp.time.Time;
@@ -173,7 +173,7 @@ public class MatsimPlanCreatorTest {
 		when(activity.activityType()).thenReturn(type);
 		when(activity.calculatePlannedEndDate()).thenReturn(end);
 		when(activity.isLocationSet()).thenReturn(true);
-		when(activity.mode()).thenReturn(Mode.CAR);
+		when(activity.mode()).thenReturn(StandardMode.CAR);
 		return activity;
 	}
 }

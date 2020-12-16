@@ -5,12 +5,12 @@ apply plugin: 'jacoco'
 
 group = 'edu.kit.ifv.mobitopp'
 version = 0.1
-wrapper.gradleVersion = '4.10'
+wrapper.gradleVersion = '6.3'
 
 repositories {
     jcenter()
     mavenCentral()
-    maven { url "http://download.osgeo.org/webdav/geotools" }
+    maven { url "https://repo.osgeo.org/repository/release" }
 }
 
 configurations.all {
@@ -20,14 +20,15 @@ configurations.all {
 }
 
 dependencies {
+    annotationProcessor 'org.projectlombok:lombok:1.18.8'
+    compileOnly 'org.projectlombok:lombok:1.18.8'
     compile 'edu.kit.ifv.mobitopp:mobitopp:latest.integration',
         'org.jvnet.ogc:kml-v_2_2_0:2.2.0',
         'org.matsim:matsim:0.7.0'
         
     testCompile 'junit:junit:4.12',
         'org.hamcrest:hamcrest-all:1.3',
-        'org.mockito:mockito-core:2.+',
-        'nl.jqno.equalsverifier:equalsverifier:2.2.+'
+        'org.mockito:mockito-core:2.+'
 }
 
 eclipse.classpath {

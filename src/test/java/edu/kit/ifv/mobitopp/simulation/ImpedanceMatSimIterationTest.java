@@ -22,15 +22,15 @@ public class ImpedanceMatSimIterationTest {
 	private ZoneId origin;
 	private ZoneId destination;
 	private Time date;
-	private EnumSet<Mode> carModes;
-	private EnumSet<Mode> nonCarModes;
+	private EnumSet<StandardMode> carModes;
+	private EnumSet<StandardMode> nonCarModes;
 
 	@Before
 	public void initialise() {
 		impedance = mock(ImpedanceIfc.class);
 		travelTime = mock(InMemoryMatrices.class);
 		matsim = new ImpedanceMatSimIteration(impedance, travelTime);
-		carModes = EnumSet.of(Mode.CAR, Mode.CARSHARING_FREE, Mode.CARSHARING_STATION, Mode.PASSENGER);
+		carModes = EnumSet.of(StandardMode.CAR, StandardMode.CARSHARING_FREE, StandardMode.CARSHARING_STATION, StandardMode.PASSENGER);
 		nonCarModes = EnumSet.complementOf(carModes);
 
 		origin = new ZoneId("0", 0);

@@ -10,9 +10,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.matsim.api.core.v01.population.Activity;
 
-import nl.jqno.equalsverifier.EqualsVerifier;
-import nl.jqno.equalsverifier.Warning;
-
 public class LocationToLocationTest {
 
   private ExternalTrip trip;
@@ -44,8 +41,4 @@ public class LocationToLocationTest {
     verifyNoMoreInteractions(testData.activityCreator);
   }
 
-  @Test
-  public void equalsAndHashCode() {
-    EqualsVerifier.forClass(LocationToLocation.class).suppress(Warning.REFERENCE_EQUALITY).usingGetClass().verify();
-  }
 }

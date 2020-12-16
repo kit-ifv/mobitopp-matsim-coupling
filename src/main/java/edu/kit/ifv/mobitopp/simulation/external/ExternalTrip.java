@@ -5,7 +5,11 @@ import org.matsim.api.core.v01.population.PopulationFactory;
 
 import edu.kit.ifv.mobitopp.time.RelativeTime;
 import edu.kit.ifv.mobitopp.time.Time;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
+@EqualsAndHashCode
+@ToString
 public abstract class ExternalTrip implements Comparable<ExternalTrip> {
 
   protected static final RelativeTime externalTripDuration = RelativeTime.ofHours(2);
@@ -58,39 +62,6 @@ public abstract class ExternalTrip implements Comparable<ExternalTrip> {
     }
 
     return 0;
-  }
-
-  @Override
-  public int hashCode() {
-    final int prime = 31;
-    int result = 1;
-    result = prime * result + id;
-    result = prime * result + ((startTime == null) ? 0 : startTime.hashCode());
-    return result;
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj)
-      return true;
-    if (obj == null)
-      return false;
-    if (getClass() != obj.getClass())
-      return false;
-    ExternalTrip other = (ExternalTrip) obj;
-    if (id != other.id)
-      return false;
-    if (startTime == null) {
-      if (other.startTime != null)
-        return false;
-    } else if (!startTime.equals(other.startTime))
-      return false;
-    return true;
-  }
-
-  @Override
-  public String toString() {
-    return "ExternalTrip [id=" + id + ", startTime=" + startTime + "]";
   }
 
 }

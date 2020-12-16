@@ -28,8 +28,8 @@ public class ImpedanceMatSimIteration implements ImpedanceIfc {
 	}
 
 	private boolean usesCar(Mode mode) {
-		return Mode.CAR.equals(mode) || Mode.CARSHARING_FREE.equals(mode)
-				|| Mode.CARSHARING_STATION.equals(mode) || Mode.PASSENGER.equals(mode);
+		return StandardMode.CAR.equals(mode) || StandardMode.CARSHARING_FREE.equals(mode)
+				|| StandardMode.CARSHARING_STATION.equals(mode) || StandardMode.PASSENGER.equals(mode);
 	}
 
 	@Override

@@ -6,6 +6,7 @@ import java.util.Map;
 import org.matsim.api.core.v01.TransportMode;
 
 import edu.kit.ifv.mobitopp.simulation.Mode;
+import edu.kit.ifv.mobitopp.simulation.StandardMode;
 
 public class ModeConverter {
 
@@ -14,11 +15,11 @@ public class ModeConverter {
 	public ModeConverter() {
 		super();
 		toMatsim = new HashMap<>();
-		toMatsim.put(Mode.BIKE, TransportMode.bike);
-		toMatsim.put(Mode.CAR, TransportMode.car);
-		toMatsim.put(Mode.PASSENGER, TransportMode.ride);
-		toMatsim.put(Mode.PEDESTRIAN, TransportMode.walk);
-		toMatsim.put(Mode.PUBLICTRANSPORT, TransportMode.pt);
+		toMatsim.put(StandardMode.BIKE, TransportMode.bike);
+		toMatsim.put(StandardMode.CAR, TransportMode.car);
+		toMatsim.put(StandardMode.PASSENGER, TransportMode.ride);
+		toMatsim.put(StandardMode.PEDESTRIAN, TransportMode.walk);
+		toMatsim.put(StandardMode.PUBLICTRANSPORT, TransportMode.pt);
 	}
 
 	public String toMatsim(Mode mode) {

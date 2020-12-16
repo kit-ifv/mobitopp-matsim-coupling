@@ -1,5 +1,7 @@
 package edu.kit.ifv.mobitopp.populationsynthesis;
 
+import static edu.kit.ifv.mobitopp.populationsynthesis.EconomicalStatusCalculators.oecd2017;
+
 import java.io.File;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -8,10 +10,10 @@ import java.util.Map;
 import edu.kit.ifv.mobitopp.data.PanelDataRepository;
 import edu.kit.ifv.mobitopp.populationsynthesis.carownership.CarOwnershipModel;
 import edu.kit.ifv.mobitopp.populationsynthesis.carownership.CarSegmentModel;
-import edu.kit.ifv.mobitopp.populationsynthesis.carownership.CarSharingCustomerModel;
 import edu.kit.ifv.mobitopp.populationsynthesis.carownership.ElectricCarOwnershipBasedOnSociodemographic;
 import edu.kit.ifv.mobitopp.populationsynthesis.carownership.GenericElectricCarOwnershipModel;
 import edu.kit.ifv.mobitopp.populationsynthesis.carownership.LogitBasedCarSegmentModel;
+import edu.kit.ifv.mobitopp.populationsynthesis.carownership.MobilityProviderCustomerModel;
 import edu.kit.ifv.mobitopp.populationsynthesis.carownership.ProbabilityForElectricCarOwnershipModel;
 import edu.kit.ifv.mobitopp.populationsynthesis.householdlocation.CarVelocityFilter;
 import edu.kit.ifv.mobitopp.populationsynthesis.householdlocation.EdgeFilter;
@@ -23,7 +25,7 @@ import edu.kit.ifv.mobitopp.simulation.IdSequence;
 import edu.kit.ifv.mobitopp.simulation.ImpedanceIfc;
 import edu.kit.ifv.mobitopp.simulation.emobility.EmobilityPersonCreator;
 
-public class PopulationSynthesisMatsim extends BasicPopulationSynthesis {
+public class PopulationSynthesisMatsim extends BasicPopulationSynthesisIpf {
 
 	private static final int maxVelocity = 50;
 	private static final double maxDistance = 1.0d;
@@ -34,7 +36,7 @@ public class PopulationSynthesisMatsim extends BasicPopulationSynthesis {
 			SynthesisContext context, ActivityScheduleAssigner activityScheduleAssigner) {
 
 		super(carOwnershipModel, householdLocationSelector, chargePrivatelySelector, personCreator,
-				activityScheduleAssigner, context);
+				activityScheduleAssigner, oecd2017(), context);
 	}
 	
 	@Override
@@ -87,7 +89,7 @@ public class PopulationSynthesisMatsim extends BasicPopulationSynthesis {
 
 	private static EmobilityPersonCreator personCreator(
 			SynthesisContext configuration, CommutationTicketModelIfc commuterTicketModel) {
-		Map<String, CarSharingCustomerModel> carSharing = configuration.carSharing();
+		Map<String, MobilityProviderCustomerModel> carSharing = configuration.carSharing();
 		return new EmobilityPersonCreator(commuterTicketModel, carSharing,
 				configuration.seed());
 	}
